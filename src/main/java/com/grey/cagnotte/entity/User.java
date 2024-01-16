@@ -1,0 +1,32 @@
+package com.grey.cagnotte.entity;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class User {
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private long id;
+    @Max(value = 50)
+    private String nom;
+    @Max(value = 100)
+    private String prenoms;
+    @Column(unique = true)
+    private String email;
+    @Max(value = 20)
+    private String tel1;
+    @Max(value = 20)
+    private String tel2;
+    private String adresse;
+    private String password;
+    private String type;
+}
