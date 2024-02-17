@@ -1,5 +1,6 @@
 package com.grey.cagnotte.controller;
 
+import com.grey.cagnotte.entity.Etat;
 import com.grey.cagnotte.payload.request.EtatRequest;
 import com.grey.cagnotte.payload.response.EtatResponse;
 import com.grey.cagnotte.service.EtatService;
@@ -12,12 +13,20 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/etats")
 @RequiredArgsConstructor
 @Log4j2
 public class EtatController {
     private final String name= "EtatController | ";
-    public EtatService etatService;
+    private final EtatService etatService;
+
+    @GetMapping
+    public ResponseEntity<List<Etat>> getEtats(){
+        log.info(name+"getEtats is called");
+
+        return new ResponseEntity<>(etatService.getAllEtats(), HttpStatus.OK);
+    }
+
 
     @PostMapping
     public ResponseEntity<Long> addEtat(@RequestBody EtatRequest etatRequest){

@@ -27,4 +27,3 @@ replay_pid*
 target/
 .idea/
 pom.xml/
-main/resources/application.yml

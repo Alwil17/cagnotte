@@ -20,7 +20,7 @@ import static org.springframework.beans.BeanUtils.copyProperties;
 public class EtatServiceImpl implements EtatService {
     private final String NOT_FOUND= "ETAT_NOT_FOUND";
     private final String name= "EtatServiceImpl | ";
-    private EtatRepository etatRepository;
+    private final EtatRepository etatRepository;
 
     @Override
     public List<Etat> getAllEtats(){return etatRepository.findAll();}
@@ -45,7 +45,7 @@ public class EtatServiceImpl implements EtatService {
     }
 
     @Override
-    public void addEtats(List<EtatRequest> etatRequests) {
+    public void addEtat(List<EtatRequest> etatRequests) {
         log.info(name+"addUsers is called");
         etatRequests.forEach(etatRequest ->{
             Etat etat;
