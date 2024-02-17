@@ -11,12 +11,12 @@ public interface EtatService {
 
     long addEtat(EtatRequest EtatRequest);
 
-    void addEtats(List<EtatRequest> EtatRequests);
+    void addEtats(List<EtatRequest> etatRequests);
 
-    EtatResponse getEtatBylibelle(String EtatEmail);
+    EtatResponse getEtatById(long etatId);
 
-    void editEtat(EtatRequest EtatRequest, long EtatId);
+    void editEtat(EtatRequest etatRequest, long etatId);
 
-    public void deleteEtatById(long EtatId);
+    public void deleteEtatById(long etatId);
 
 }

@@ -26,29 +26,54 @@ public class EtatServiceImpl implements EtatService {
     public List<Etat> getAllEtats(){return etatRepository.findAll();}
 
     @Override
-    public long addEtat(EtatRequest EtatRequest) {
+    public long addEtat(EtatRequest etatRequest) {
+        log.info(name+"addEtat is called");
+        Etat etat;
+        if(!etatRepository.existByLibelle(etatRequest.getLibelle())) {
+            etat = Etat.builder()
+                    .libelle(etatRequest.getLibelle())
+                    .slug(etatRequest.getSlug())
+                    .build();
+            etatRepository.save(etat);
+        }else {
+            etat= etatRepository.findByLibelle(etatRequest.getLibelle()).orElseThrow();
+            editEtat(etatRequest, etat.getId());
+        }
+        log.info(name+"addEtat | Etat Created | Id : " + etat.getId());
 
+        return etat.getId();
     }
 
     @Override
-    public void addEtats(List<EtatRequest> EtatRequests) {
-
+    public void addEtats(List<EtatRequest> etatRequests) {
+        log.info(name+"addUsers is called");
+        etatRequests.forEach(etatRequest ->{
+            Etat etat;
+            if(!etatRepository.existByLibelle(etatRequest.getLibelle())) {
+                etat = Etat.builder()
+                        .libelle(etatRequest.getLibelle())
+                        .slug(etatRequest.getSlug())
+                        .build();
+                etatRepository.save(etat);
+            }
+        });
+        log.info(name+"addEtats | Etats Created");
     }
 
     @Override
-    public EtatResponse getEtatBylibelle(String EtatLibelle) {
-        log.info(name+"getUserByEmail is called");
+    public EtatResponse getEtatById(long etatId) {
+        log.info(name+"getUserById is called");
 
         Etat etat
-                = etatRepository.findByLibelle(EtatLibelle)
+                = etatRepository.findById(etatId)
                 .orElseThrow(
-                        () -> new CagnotteCustomException("Etat with given Libelle not found", NOT_FOUND));
+                        () -> new CagnotteCustomException("Etat with given id not found", NOT_FOUND));
 
         EtatResponse etatResponse = new EtatResponse();
 
         copyProperties(etat, etatResponse);
 
-        log.info(name+"getEtatByLibelle | etatResponse :" + etatResponse.toString());
+        log.info(name+"getEtatById | etatResponse :" + etatResponse.toString());
 
         return etatResponse;
     }
