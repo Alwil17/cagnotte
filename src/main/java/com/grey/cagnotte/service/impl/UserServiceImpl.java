@@ -8,6 +8,7 @@ import com.grey.cagnotte.repository.UserRepository;
 import com.grey.cagnotte.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import static org.springframework.beans.BeanUtils.copyProperties;
 @Log4j2
 public class UserServiceImpl implements UserService {
     private final String NOT_FOUND = "USER_NOT_FOUND";
+
 
     private final UserRepository userRepository;
 
