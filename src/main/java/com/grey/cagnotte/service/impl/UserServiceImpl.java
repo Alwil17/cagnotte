@@ -41,22 +41,22 @@ public class UserServiceImpl implements UserService {
             type = "user";
 
         User user;
-        if(userRepository.existsByEmailEquals(userRequest.getEmail())){
+        if(!userRepository.existsByEmailEquals(userRequest.getEmail())){
             user = User.builder()
                     .nom(userRequest.getNom())
                     .prenoms(userRequest.getPrenoms())
-                    .email(userRequest.getPrenoms())
+                    .email(userRequest.getEmail())
                     .tel1(userRequest.getTel1())
                     .tel2(userRequest.getTel2())
                     .adresse(userRequest.getAdresse())
                     .password(userRequest.getPassword())
                     .type(type)
                     .build();
+            user = userRepository.save(user);
         }else{
             user = userRepository.findByEmailEquals(userRequest.getEmail()).orElseThrow();
+            editUser(userRequest, user.getId());
         }
-
-        user = userRepository.save(user);
 
         log.info("UserServiceImpl | addUser | User Created | Id : " + user.getId());
         return user.getId();
@@ -73,18 +73,21 @@ public class UserServiceImpl implements UserService {
             else
                 type = "user";
 
-            User user = User.builder()
-                    .nom(userRequest.getNom())
-                    .prenoms(userRequest.getPrenoms())
-                    .email(userRequest.getPrenoms())
-                    .tel1(userRequest.getTel1())
-                    .tel2(userRequest.getTel2())
-                    .adresse(userRequest.getAdresse())
-                    .password(userRequest.getPassword())
-                    .type(type)
-                    .build();
+            User user;
+            if(!userRepository.existsByEmailEquals(userRequest.getEmail())){
+                user = User.builder()
+                        .nom(userRequest.getNom())
+                        .prenoms(userRequest.getPrenoms())
+                        .email(userRequest.getEmail())
+                        .tel1(userRequest.getTel1())
+                        .tel2(userRequest.getTel2())
+                        .adresse(userRequest.getAdresse())
+                        .password(userRequest.getPassword())
+                        .type(type)
+                        .build();
 
-            userRepository.save(user);
+                userRepository.save(user);
+            }
         }
 
         log.info("UserServiceImpl | addUser | Users Created");
