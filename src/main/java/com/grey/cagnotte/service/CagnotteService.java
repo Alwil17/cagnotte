@@ -3,21 +3,20 @@ package com.grey.cagnotte.service;
 
 import com.grey.cagnotte.entity.Cagnotte;
 import com.grey.cagnotte.payload.request.CagnotteRequest;
-
+import com.grey.cagnotte.payload.response.CagnotteResponse;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CagnotteService {
 
-    List<Cagnotte> getAllCagnottes();
+    List<Cagnotte> getAllCagnottes () ;
 
-    public Optional<Cagnotte> getCagnotteById(Long id);
+    public long addCagnotte(CagnotteRequest cagnotteRequest) ;
 
-    void editCagnotte (CagnotteRequest cagnotteRequest, Long id);
+    public CagnotteResponse getCagnotteById(long cagnotteId) ;
 
-    public Cagnotte saveCagnotte(Cagnotte cagnotte);
+    public void editCagnotte(CagnotteRequest cagnotteRequest , long cagnotteId) ;
 
-    public void deleteCagnotteById(Long id);
+    public void deleteCagnotteById(long cagnotteId) ;
 
 }

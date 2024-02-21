@@ -33,6 +33,4 @@ public class CagnotteResponse {
     private long utilisateur_id;
     private long categorie_id;
     private long etat_id;
-
-
 }

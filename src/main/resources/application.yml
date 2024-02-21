@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 81
   tomcat:
     threads:
       max: 14
@@ -19,7 +19,7 @@ spring:
 #    username: root
 #    password:
   profiles:
-    active: prod
+    active: debug
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:

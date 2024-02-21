@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface CategorieRepository extends JpaRepository<Categorie,Long > {
+public interface CategorieRepository extends JpaRepository<Categorie, Long> {
 
     @Query("SELECT case when count(c)>0 then true else false end from Categorie c where c.libelle = :libelle")
     boolean existsByLibelleEquals ( String libelle );

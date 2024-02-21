@@ -19,10 +19,10 @@ public class Participation {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private long id;
     private long cagnotte_id;
-    private double montant;
+    private double montant = 0;
     private LocalDateTime date_participation;
     private String nom_participant;
     private String message_personnalise;
-    private boolean is_anonyme;
-    private boolean show_montant;
+    private boolean is_anonyme = false;
+    private boolean show_montant = true;
 }

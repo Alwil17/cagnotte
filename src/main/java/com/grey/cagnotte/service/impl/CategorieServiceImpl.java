@@ -6,6 +6,7 @@ import com.grey.cagnotte.payload.request.CategorieRequest;
 import com.grey.cagnotte.payload.response.CategorieResponse;
 import com.grey.cagnotte.repository.CategorieRepository;
 import com.grey.cagnotte.service.CategorieService;
+import com.grey.cagnotte.utils.Str;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,8 @@ import static org.springframework.beans.BeanUtils.copyProperties;
 @RequiredArgsConstructor
 public class CategorieServiceImpl  implements CategorieService {
 
-    private CategorieRepository categorieRepository ;
+    private final CategorieRepository categorieRepository ;
+
     @Override
     public List<Categorie> getAllCategorie() {
         return categorieRepository.findAll() ;
@@ -30,11 +32,12 @@ public class CategorieServiceImpl  implements CategorieService {
         Categorie categorie ;
         if(categorieRepository.existsByLibelleEquals(categorieRequest.getLibelle())){
             categorie = categorieRepository.findByLibelle(categorieRequest.getLibelle()).orElseThrow();
+            editCategorie(categorieRequest, categorie.getId());
         }
         else {
             categorie = Categorie.builder()
                     .libelle(categorieRequest.getLibelle())
-                    .slug(categorieRequest.getSlug())
+                    .slug(Str.slug(categorieRequest.getLibelle()))
                     .icone(categorieRequest.getIcone())
                     .allow_concerne(categorieRequest.isAllow_concerne())
                     .allow_message(categorieRequest.isAllow_message())
@@ -42,8 +45,9 @@ public class CategorieServiceImpl  implements CategorieService {
                     .allow_lieu(categorieRequest.isAllow_lieu())
                     .allow_url(categorieRequest.isAllow_url())
                     .build();
+            categorie =  categorieRepository.save(categorie);
         }
-       categorie =  categorieRepository.save(categorie);
+
 
         return categorie.getId();
     }
@@ -70,7 +74,7 @@ public class CategorieServiceImpl  implements CategorieService {
                 ()-> new CagnotteCustomException("Categorie with given Id not found","404")
         );
         categorie.setLibelle(categorieRequest.getLibelle());
-        categorie.setSlug(categorieRequest.getSlug());
+        categorie.setSlug(Str.slug(categorieRequest.getLibelle()));
         categorie.setIcone(categorieRequest.getIcone());
         categorie.setAllow_concerne(categorieRequest.isAllow_concerne());
         categorie.setAllow_message(categorieRequest.isAllow_message());

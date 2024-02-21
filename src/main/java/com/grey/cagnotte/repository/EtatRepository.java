@@ -9,10 +9,8 @@ import java.util.Optional;
 
 @Repository
 public interface EtatRepository extends JpaRepository<Etat, Long> {
+    public Optional<Etat> findByLibelle(String libelle);
 
-    @Query(value = "SELECT E FROM Etat E where E.libelle= :libelle")
-    public Optional<Etat> findByLibelle(final String libelle);
-
-    @Query(value = "SELECT case when count(e)>0 then true else false end FROM Etat e where libelle= :libelle")
-    public Boolean existByLibelle(final String libelle);
+    @Query(value = "SELECT case when count(e)>0 then true else false end FROM Etat e where e.libelle = :libelle")
+    public Boolean existByLibelle(String libelle);
 }

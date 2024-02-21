@@ -6,6 +6,7 @@ import com.grey.cagnotte.payload.request.EtatRequest;
 import com.grey.cagnotte.payload.response.EtatResponse;
 import com.grey.cagnotte.repository.EtatRepository;
 import com.grey.cagnotte.service.EtatService;
+import com.grey.cagnotte.utils.Str;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class EtatServiceImpl implements EtatService {
         if(!etatRepository.existByLibelle(etatRequest.getLibelle())) {
             etat = Etat.builder()
                     .libelle(etatRequest.getLibelle())
-                    .slug(etatRequest.getSlug())
+                    .slug(Str.slug(etatRequest.getLibelle()))
                     .build();
             etatRepository.save(etat);
         }else {
@@ -46,13 +47,13 @@ public class EtatServiceImpl implements EtatService {
 
     @Override
     public void addEtat(List<EtatRequest> etatRequests) {
-        log.info(name+"addUsers is called");
+        log.info(name+"addEtats is called");
         etatRequests.forEach(etatRequest ->{
             Etat etat;
             if(!etatRepository.existByLibelle(etatRequest.getLibelle())) {
                 etat = Etat.builder()
                         .libelle(etatRequest.getLibelle())
-                        .slug(etatRequest.getSlug())
+                        .slug(Str.slug(etatRequest.getLibelle()))
                         .build();
                 etatRepository.save(etat);
             }
@@ -62,7 +63,7 @@ public class EtatServiceImpl implements EtatService {
 
     @Override
     public EtatResponse getEtatById(long etatId) {
-        log.info(name+"getUserById is called");
+        log.info(name+"getEtatById is called");
 
         Etat etat
                 = etatRepository.findById(etatId)
@@ -83,7 +84,7 @@ public class EtatServiceImpl implements EtatService {
         log.info(name+"editEtat is called");
         Etat etat= etatRepository.findById(etatId)
                 .orElseThrow(()-> new CagnotteCustomException("Etat with given id not found", NOT_FOUND));
-        etat.setSlug(etatRequest.getSlug());
+        etat.setSlug(Str.slug(etatRequest.getLibelle()));
         etat.setLibelle(etatRequest.getLibelle());
         etatRepository.save(etat);
         log.info(name+"editEtat | Etat Updated | Etat Id: "+etat.getId());

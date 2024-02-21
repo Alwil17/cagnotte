@@ -1,6 +1,5 @@
 package com.grey.cagnotte.entity;
 
-public class Etat {
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,9 +18,8 @@ import lombok.NoArgsConstructor;
 public class Etat {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public long id;
-    @Max(value = 150)
-    public String libelle;
-    @Max(value = 50)
-    public String slug;
+    private long id;
+    @Max(value = 100)
+    private String libelle;
+    private String slug;
 }

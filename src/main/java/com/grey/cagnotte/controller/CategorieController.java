@@ -21,29 +21,30 @@ public class CategorieController {
 
     @GetMapping
     public ResponseEntity<List<Categorie>> getAllcategorie (){
-
+        log.info("CategorieController | getAllCategories is called");
         return new ResponseEntity<>(categorieService.getAllCategorie(), HttpStatus.OK);
     }
     @PostMapping
     public ResponseEntity<Long> addCategorie(@RequestBody CategorieRequest categorieRequest){
-
+        log.info("CategorieController | addCategorie is called");
         long categorieId = categorieService.addCategorie(categorieRequest);
         return new ResponseEntity<>(categorieId,HttpStatus.CREATED);
     }
     @GetMapping("/{id}")
-    public  ResponseEntity<CategorieResponse> getCategorie (@PathVariable("id") long id){
+    public  ResponseEntity<CategorieResponse> getCategorieById (@PathVariable("id") long id){
+        log.info("CategorieController | getCategorieById is called");
         CategorieResponse categorieResponse = categorieService.getCategorie(id);
         return  new ResponseEntity<>(categorieResponse,HttpStatus.OK);
     }
     @PutMapping("/{id}")
     public  ResponseEntity<Long> editCategorie (@RequestBody CategorieRequest categorieRequest, @PathVariable("id") long id){
+        log.info("CategorieController | editCategorie is called");
         long categorieId = categorieService.editCategorie(categorieRequest,id);
         return new ResponseEntity<>(categorieId,HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public  ResponseEntity<String> deleteCategorie (@PathVariable("id") long id ){
+    public  void deleteCategorieById(@PathVariable("id") long id ){
         categorieService.deleteCategorie(id);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

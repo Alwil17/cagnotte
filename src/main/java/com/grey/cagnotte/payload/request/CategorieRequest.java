@@ -6,13 +6,12 @@ import lombok.Data;
 @Data
 @Builder
 public class CategorieRequest {
-    private String libelle ;
-    private String slug ;
-    private String icone ;
-    private boolean allow_concerne ;
-    private boolean allow_message ;
-    private boolean allow_image ;
-    private boolean allow_lieu ;
-    private boolean allow_url ;
+    private String libelle;
+    private String icone;
+    private boolean allow_concerne;
+    private boolean allow_message;
+    private boolean allow_image;
+    private boolean allow_lieu;
+    private boolean allow_url;
 
 }
