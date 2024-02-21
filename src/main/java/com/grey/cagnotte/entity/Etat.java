@@ -1,5 +1,6 @@
 package com.grey.cagnotte.entity;
 
+public class Etat {
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
