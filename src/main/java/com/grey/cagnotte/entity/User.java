@@ -1,11 +1,14 @@
 package com.grey.cagnotte.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -29,4 +32,7 @@ public class User {
     private String adresse;
     private String password;
     private String type;
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Cagnotte> cagnottes;
 }

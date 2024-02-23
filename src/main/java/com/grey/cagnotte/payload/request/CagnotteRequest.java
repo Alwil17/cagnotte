@@ -24,4 +24,5 @@ public class CagnotteRequest {
     private String image;
     private LocalDateTime lieu_evenement;
     private String url;
+    private String user_email;
 }

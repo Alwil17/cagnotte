@@ -32,7 +32,14 @@ public class Cagnotte {
     private String image;
     private LocalDateTime lieu_evenement;
     private String url;
-    private long utilisateur_id;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     private long categorie_id;
-    private long etat_id;
+    @ManyToOne
+    @JoinColumn(name = "etat_id")
+    private Etat etat;
+
+
 }

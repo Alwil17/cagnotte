@@ -30,7 +30,7 @@ public class CagnotteResponse {
     private String image;
     private LocalDateTime lieu_evenement;
     private String url;
-    private long utilisateur_id;
+    private UserResponse user;
     private long categorie_id;
     private long etat_id;
 }

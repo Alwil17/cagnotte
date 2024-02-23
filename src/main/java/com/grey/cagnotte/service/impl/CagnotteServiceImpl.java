@@ -1,27 +1,22 @@
 package com.grey.cagnotte.service.impl;
 
-import com.grey.cagnotte.entity.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.grey.cagnotte.entity.Cagnotte;
-import com.grey.cagnotte.entity.Cagnotte;
+import com.grey.cagnotte.entity.User;
 import com.grey.cagnotte.exception.CagnotteCustomException;
 import com.grey.cagnotte.payload.request.CagnotteRequest;
-import com.grey.cagnotte.payload.request.CagnotteRequest;
-import com.grey.cagnotte.payload.request.CagnotteRequest;
-import com.grey.cagnotte.payload.request.UserRequest;
 import com.grey.cagnotte.payload.response.CagnotteResponse;
-import com.grey.cagnotte.payload.response.CagnotteResponse;
+import com.grey.cagnotte.payload.response.UserResponse;
 import com.grey.cagnotte.repository.CagnotteRepository;
-import com.grey.cagnotte.repository.CagnotteRepository;
-import com.grey.cagnotte.repository.CagnotteRepository;
+import com.grey.cagnotte.repository.UserRepository;
 import com.grey.cagnotte.service.CagnotteService;
 import com.grey.cagnotte.utils.Str;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.springframework.beans.BeanUtils.copyProperties;
 
@@ -29,9 +24,10 @@ import static org.springframework.beans.BeanUtils.copyProperties;
 @RequiredArgsConstructor
 @Log4j2
 public class CagnotteServiceImpl implements CagnotteService {
-    private final String NOT_FOUND= "CAGNOTTE_NOT_FOUND";
+    private final String NOT_FOUND = "CAGNOTTE_NOT_FOUND";
 
     private final CagnotteRepository cagnotteRepository;
+    private final UserRepository userRepository;
 
 
     @Override
@@ -48,7 +44,21 @@ public class CagnotteServiceImpl implements CagnotteService {
 
         CagnotteResponse cagnotteResponse = new CagnotteResponse();
 
+        /* Cette fonction aurait copié les données plus vite
+        * Mais le User peut être null, donc, je préfère m'en prévenir.
+        *
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        cagnotteResponse = mapper.convertValue(cagnotte, CagnotteResponse.class);
+        */
         copyProperties(cagnotte, cagnotteResponse);
+
+
+        if(cagnotte.getUser() != null) {
+            UserResponse user = new UserResponse();
+            copyProperties(cagnotte.getUser(), user);
+            cagnotteResponse.setUser(user);
+        }
 
         log.info("CagnotteServiceImpl |  getCagnotteById | cagnotteResponse :" + cagnotteResponse.toString());
         return cagnotteResponse;
@@ -58,22 +68,30 @@ public class CagnotteServiceImpl implements CagnotteService {
     public long addCagnotte(CagnotteRequest cagnotteRequest) {
         log.info("CagnotteServiceImpl | addCagnotte is called");
 
+        User user = null;
+        if(userRepository.existsByEmailEquals(cagnotteRequest.getUser_email())){
+            user = userRepository.findByEmailEquals(cagnotteRequest.getUser_email()).orElseThrow();
+        }
+
         Cagnotte cagnotte = Cagnotte.builder()
-            .libelle(cagnotteRequest.getLibelle())
-            .slug(Str.slug(cagnotteRequest.getLibelle()))
-            .reference(cagnotteRequest.getReference())
-            .organisateur(cagnotteRequest.getOrganisateur())
-            .concerne(cagnotteRequest.getConcerne())
-            .date_creation(cagnotteRequest.getDate_creation())
-            .date_echeance(cagnotteRequest.getDate_echeance())
-            .montant_objectif(cagnotteRequest.getMontant_objectif())
-            .montant_collecte(cagnotteRequest.getMontant_collecte())
-            .type_participation(cagnotteRequest.getType_participation())
-            .message_personnalise(cagnotteRequest.getMessage_personnalise())
-            .image(cagnotteRequest.getImage())
-            .lieu_evenement(cagnotteRequest.getLieu_evenement())
-            .url(cagnotteRequest.getUrl())
+                .libelle(cagnotteRequest.getLibelle())
+                .slug(Str.slug(cagnotteRequest.getLibelle()))
+                .reference(cagnotteRequest.getReference())
+                .organisateur(cagnotteRequest.getOrganisateur())
+                .concerne(cagnotteRequest.getConcerne())
+                .date_creation(cagnotteRequest.getDate_creation())
+                .date_echeance(cagnotteRequest.getDate_echeance())
+                .montant_objectif(cagnotteRequest.getMontant_objectif())
+                .montant_collecte(cagnotteRequest.getMontant_collecte())
+                .type_participation(cagnotteRequest.getType_participation())
+                .message_personnalise(cagnotteRequest.getMessage_personnalise())
+                .image(cagnotteRequest.getImage())
+                .lieu_evenement(cagnotteRequest.getLieu_evenement())
+                .url(cagnotteRequest.getUrl())
                 .build();
+        // S'il n'y a pas d'utilisateur avec cet email,
+        // il ne fera donc rien
+        if(user != null) cagnotte.setUser(user);
 
         cagnotte = cagnotteRepository.save(cagnotte);
 
@@ -91,6 +109,10 @@ public class CagnotteServiceImpl implements CagnotteService {
                         "Cagnotte with given Id not found",
                         NOT_FOUND
                 ));
+        User user = null;
+        if(userRepository.existsByEmailEquals(cagnotteRequest.getUser_email())){
+            user = userRepository.findByEmailEquals(cagnotteRequest.getUser_email()).orElseThrow();
+        }
         cagnotte.setLibelle(cagnotteRequest.getLibelle());
         cagnotte.setSlug(Str.slug(cagnotteRequest.getLibelle()));
         cagnotte.setReference(cagnotteRequest.getReference());
@@ -105,6 +127,9 @@ public class CagnotteServiceImpl implements CagnotteService {
         cagnotte.setImage(cagnotteRequest.getImage());
         cagnotte.setLieu_evenement(cagnotteRequest.getLieu_evenement());
         cagnotte.setUrl(cagnotteRequest.getUrl());
+        // S'il n'y a pas d'utilisateur avec cet email,
+        // il ne fera donc rien
+        if(user != null) cagnotte.setUser(user);
         cagnotteRepository.save(cagnotte);
 
         log.info("CagnotteServiceImpl | editCagnotte | Cagnotte Updated | Cagnotte Id :" + cagnotte.getId());
