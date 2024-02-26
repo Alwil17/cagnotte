@@ -1,8 +1,11 @@
 package com.grey.cagnotte.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -22,4 +25,9 @@ public class Categorie {
   private boolean allow_image = false;
   private boolean allow_lieu = false;
   private boolean allow_url = false;
+
+  @OneToMany(mappedBy = "categorie")
+  @JsonIgnore
+  private List<Cagnotte> cagnottes;
+
 }
