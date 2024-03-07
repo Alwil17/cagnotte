@@ -41,5 +41,9 @@ public class Cagnotte {
     @JoinColumn(name = "etat_id")
     private Etat etat;
 
+    @ManyToOne
+    @JoinColumn(name = "categorie_id")
+    private Categorie categorie;
+
 
 }
