@@ -14,10 +14,6 @@ logging:
     org.springframework.security: DEBUG
     io.jsonwebtoken: DEBUG
 spring:
-#  datasource:
-#    url: jdbc:mysql://91.234.194.31:3306/c0cagnotte
-#    username: c0cagnotte
-#    password: cagnotte123
   datasource:
     url: jdbc:mysql://localhost:3306/projet_cagnotte
     username: root
