@@ -1,5 +1,5 @@
 server:
-  port: 81
+  port: 8084
   tomcat:
     threads:
       max: 14

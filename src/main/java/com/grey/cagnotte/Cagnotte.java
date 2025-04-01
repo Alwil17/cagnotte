@@ -26,20 +26,13 @@ public class Cagnotte extends SpringBootServletInitializer {
         return application.sources(Cagnotte.class);
     }
 
-    /*@Override
-    public void run(String... args) throws Exception {
-        //SpringApplication.run(Cagnotte.class, args);
-        System.out.println("Application Started !!");
-        Thread.currentThread().join();
-    }*/
-
     @Bean
     @SuppressWarnings("unchecked")
     public FilterRegistrationBean simpleCorsFilter(){
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:4200"));
+        config.setAllowedOrigins(Collections.singletonList("*"));
         config.setAllowedMethods(Collections.singletonList("*"));
         config.setAllowedHeaders(Collections.singletonList("*"));
         source.registerCorsConfiguration("/**", config);
