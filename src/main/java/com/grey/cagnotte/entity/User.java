@@ -17,13 +17,14 @@ import java.util.List;
 @Builder
 public class User {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
+
     @Max(value = 50)
     private String nom;
     @Max(value = 100)
     private String prenoms;
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
     @Max(value = 20)
     private String tel1;
@@ -32,6 +33,7 @@ public class User {
     private String adresse;
     private String password;
     private String type;
+
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Cagnotte> cagnottes;

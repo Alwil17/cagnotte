@@ -28,7 +28,7 @@ public class CagnotteResponse {
     private double montant_participation;
     private String message_personnalise;
     private String image;
-    private LocalDateTime lieu_evenement;
+    private String lieu_evenement;
     private String url;
     private UserResponse user;
     private long categorie_id;
