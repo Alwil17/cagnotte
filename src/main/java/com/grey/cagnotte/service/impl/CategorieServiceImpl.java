@@ -39,11 +39,11 @@ public class CategorieServiceImpl  implements CategorieService {
                     .libelle(categorieRequest.getLibelle())
                     .slug(Str.slug(categorieRequest.getLibelle()))
                     .icone(categorieRequest.getIcone())
-                    .allow_concerne(categorieRequest.isAllow_concerne())
-                    .allow_message(categorieRequest.isAllow_message())
-                    .allow_image(categorieRequest.isAllow_image())
-                    .allow_lieu(categorieRequest.isAllow_lieu())
-                    .allow_url(categorieRequest.isAllow_url())
+                    .allowConcerne(categorieRequest.isAllow_concerne())
+                    .allowMessage(categorieRequest.isAllow_message())
+                    .allowMedia(categorieRequest.isAllow_media())
+                    .allowLieu(categorieRequest.isAllow_lieu())
+                    .allowUrl(categorieRequest.isAllow_url())
                     .build();
             categorie =  categorieRepository.save(categorie);
         }
@@ -76,11 +76,11 @@ public class CategorieServiceImpl  implements CategorieService {
         categorie.setLibelle(categorieRequest.getLibelle());
         categorie.setSlug(Str.slug(categorieRequest.getLibelle()));
         categorie.setIcone(categorieRequest.getIcone());
-        categorie.setAllow_concerne(categorieRequest.isAllow_concerne());
-        categorie.setAllow_message(categorieRequest.isAllow_message());
-        categorie.setAllow_image(categorieRequest.isAllow_image());
-        categorie.setAllow_lieu(categorie.isAllow_lieu());
-        categorie.setAllow_url(categorieRequest.isAllow_url());
+        categorie.setAllowConcerne(categorieRequest.isAllow_concerne());
+        categorie.setAllowMessage(categorieRequest.isAllow_message());
+        categorie.setAllowMedia(categorieRequest.isAllow_media());
+        categorie.setAllowLieu(categorieRequest.isAllow_lieu());
+        categorie.setAllowUrl(categorieRequest.isAllow_url());
 
         categorie = categorieRepository.save(categorie);
         return categorie.getId();

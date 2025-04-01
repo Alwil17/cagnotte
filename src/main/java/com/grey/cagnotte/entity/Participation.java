@@ -1,13 +1,15 @@
 package com.grey.cagnotte.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -16,13 +18,39 @@ import java.time.LocalDateTime;
 @Builder
 public class Participation {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
-    private long cagnotte_id;
-    private double montant = 0;
-    private LocalDateTime date_participation;
-    private String nom_participant;
-    private String message_personnalise;
-    private boolean is_anonyme = false;
-    private boolean show_montant = true;
+
+    private double montant;
+
+    @Column(name = "date_participation", nullable = false)
+    private LocalDateTime dateParticipation;
+
+    @Column(name = "nom_participant")
+    private String nomParticipant;
+    @Column(name = "message_personnalise")
+    private String messagePersonnalise;
+    @Column(name = "is_anonyme")
+    private boolean isAnonyme = false;
+    @Column(name = "show_montant")
+    private boolean showMontant = true;
+
+    @Column(name = "participant_id")
+    private Long participantId;
+
+    @CreationTimestamp
+    private LocalDateTime created_at;
+    @UpdateTimestamp
+    private LocalDateTime updated_at;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "type_id", nullable = false)
+    private ParticipationType type;
+
+    @OneToMany(mappedBy = "participation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transaction> transactions;
+
+    @ManyToOne
+    @JoinColumn(name = "cagnotte_id")
+    private Cagnotte cagnotte;
 }

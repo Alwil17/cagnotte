@@ -1,0 +1,75 @@
+@startuml
+' Définition d'un stéréotype pour les tables
+skinparam class {
+  BackgroundColor<<Table>> LightYellow
+  BorderColor<<Table>> Black
+}
+
+' Table Utilisateur
+class Utilisateur <<Table>> {
+  + id : INT
+  + nom : VARCHAR
+  + email : VARCHAR
+  + mot_de_passe_hash : VARCHAR
+  + created_at : DATETIME
+  + updated_at : DATETIME
+}
+
+' Table Cagnotte
+class Cagnotte <<Table>> {
+  + id : INT
+  + user_id : INT
+  + categorie_id : INT
+  + etat_id : INT
+  + titre : VARCHAR
+  + description : TEXT
+  + slug : VARCHAR
+  + montant_objectif : DECIMAL(10,2)
+  + montant_actuel : DECIMAL(10,2)
+  + date_creation : DATETIME
+  + date_cloture : DATETIME?
+  + message_personnalise : TEXT
+}
+
+' Table Categorie
+class Categorie <<Table>> {
+  + id : INT
+  + libelle : VARCHAR
+}
+
+' Table Etat (statut de la cagnotte)
+class Etat <<Table>> {
+  + id : INT
+  + libelle : VARCHAR
+}
+
+' Table Participation
+class Participation <<Table>> {
+  + id : INT
+  + cagnotte_id : INT
+  + participant_id : INT?
+  + montant : DECIMAL(10,2)
+  + date_participation : DATETIME
+  + type_participation : ENUM("libre","fixe","minimum")
+}
+
+' Optionnel : Table Transaction pour la gestion des paiements
+class Transaction <<Table>> {
+  + id : INT
+  + participation_id : INT
+  + transaction_date : DATETIME
+  + payment_method : VARCHAR
+  + status : VARCHAR
+  + external_reference : VARCHAR
+  + montant : DECIMAL(10,2)
+}
+
+' Relations
+Utilisateur "1" <-- "0..*" Cagnotte : organise >
+Cagnotte "1" <-- "0..*" Participation : reçoit >
+Utilisateur "1" <-- "0..*" Participation : contribue >
+Cagnotte "1" --> "1" Categorie : appartient à >
+Cagnotte "1" --> "1" Etat : a pour statut >
+Participation "1" --> "0..1" Transaction : génère >
+
+@enduml

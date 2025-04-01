@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.springframework.beans.BeanUtils.copyProperties;
@@ -79,15 +80,15 @@ public class CagnotteServiceImpl implements CagnotteService {
                 .reference(cagnotteRequest.getReference())
                 .organisateur(cagnotteRequest.getOrganisateur())
                 .concerne(cagnotteRequest.getConcerne())
-                .date_creation(cagnotteRequest.getDate_creation())
-                .date_echeance(cagnotteRequest.getDate_echeance())
-                .montant_objectif(cagnotteRequest.getMontant_objectif())
-                .montant_collecte(cagnotteRequest.getMontant_collecte())
-                .type_participation(cagnotteRequest.getType_participation())
-                .message_personnalise(cagnotteRequest.getMessage_personnalise())
+                .dateCreation(LocalDateTime.now())
+                .dateEcheance(cagnotteRequest.getDate_echeance())
+                .montantObjectif(cagnotteRequest.getMontant_objectif())
+                .montantCollecte(cagnotteRequest.getMontant_collecte())
+                .messagePersonnalise(cagnotteRequest.getMessage_personnalise())
                 .image(cagnotteRequest.getImage())
-                .lieu_evenement(cagnotteRequest.getLieu_evenement())
+                .lieuEvenement(cagnotteRequest.getLieu_evenement())
                 .url(cagnotteRequest.getUrl())
+                .created_at(LocalDateTime.now())
                 .build();
         // S'il n'y a pas d'utilisateur avec cet email,
         // il ne fera donc rien
@@ -118,15 +119,15 @@ public class CagnotteServiceImpl implements CagnotteService {
         cagnotte.setReference(cagnotteRequest.getReference());
         cagnotte.setOrganisateur(cagnotteRequest.getOrganisateur());
         cagnotte.setConcerne(cagnotteRequest.getConcerne());
-        cagnotte.setDate_creation(cagnotteRequest.getDate_creation());
-        cagnotte.setDate_echeance(cagnotteRequest.getDate_echeance());
-        cagnotte.setMontant_objectif(cagnotteRequest.getMontant_objectif());
-        cagnotte.setMontant_collecte(cagnotteRequest.getMontant_collecte());
-        cagnotte.setType_participation(cagnotteRequest.getType_participation());
-        cagnotte.setMessage_personnalise(cagnotteRequest.getMessage_personnalise());
+        cagnotte.setDateCreation(cagnotteRequest.getDate_creation());
+        cagnotte.setDateEcheance(cagnotteRequest.getDate_echeance());
+        cagnotte.setMontantObjectif(cagnotteRequest.getMontant_objectif());
+        cagnotte.setMontantCollecte(cagnotteRequest.getMontant_collecte());
+        cagnotte.setMessagePersonnalise(cagnotteRequest.getMessage_personnalise());
         cagnotte.setImage(cagnotteRequest.getImage());
-        cagnotte.setLieu_evenement(cagnotteRequest.getLieu_evenement());
+        cagnotte.setLieuEvenement(cagnotteRequest.getLieu_evenement());
         cagnotte.setUrl(cagnotteRequest.getUrl());
+        cagnotte.setUpdated_at(LocalDateTime.now());
         // S'il n'y a pas d'utilisateur avec cet email,
         // il ne fera donc rien
         if(user != null) cagnotte.setUser(user);

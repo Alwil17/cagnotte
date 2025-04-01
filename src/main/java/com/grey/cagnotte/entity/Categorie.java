@@ -16,15 +16,22 @@ public class Categorie {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long id ;
+
   @Max(100)
   private String libelle ;
   private String slug ;
   private String icone ;
-  private boolean allow_concerne = false;
-  private boolean allow_message = false;
-  private boolean allow_image = false;
-  private boolean allow_lieu = false;
-  private boolean allow_url = false;
+
+  @Column(name = "allow_concerne")
+  private boolean allowConcerne;
+  @Column(name = "allow_message")
+  private boolean allowMessage;
+  @Column(name = "allow_media")
+  private boolean allowMedia;
+  @Column(name = "allow_lieu")
+  private boolean allowLieu;
+  @Column(name = "allow_url")
+  private boolean allowUrl;
 
   @OneToMany(mappedBy = "categorie")
   @JsonIgnore

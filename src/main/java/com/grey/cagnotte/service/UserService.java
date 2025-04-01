@@ -15,6 +15,10 @@ public interface UserService {
 
     UserResponse getUserByEmail(String userEmail);
 
+    UserResponse getUserById(long userId);
+
+    UserResponse getUserByUsername(String username);
+
     void editUser(UserRequest userRequest, long userId);
 
     public void deleteUserById(long userId);

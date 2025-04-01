@@ -2,7 +2,6 @@ package com.grey.cagnotte.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,20 +10,22 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Entity
+@Table(name = "permissions")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class Etat {
+public class Permission {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Max(value = 100)
-    private String libelle;
-    private String slug;
 
+    @Column(nullable = false, length = 255, unique = true)
+    private String titre;
 
-    @OneToMany(mappedBy = "etat")
+    @ManyToMany(mappedBy = "permissions", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Cagnotte> cagnottes;
+    private List<User> users;
 }
+

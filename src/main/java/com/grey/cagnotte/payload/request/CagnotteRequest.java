@@ -22,7 +22,7 @@ public class CagnotteRequest {
     private double montant_participation;
     private String message_personnalise;
     private String image;
-    private LocalDateTime lieu_evenement;
+    private String lieu_evenement;
     private String url;
     private String user_email;
 }
