@@ -26,5 +26,5 @@ public class UserRequest {
     private LocalDateTime last_access_time;
 
     List<RoleRequest> roles;
-    List<PermissionResponse> permissions;
+    List<PermissionRequest> permissions;
 }

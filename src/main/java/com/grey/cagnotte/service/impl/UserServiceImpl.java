@@ -58,6 +58,7 @@ public class UserServiceImpl implements UserService {
             user = User.builder()
                     .nom(userRequest.getNom())
                     .prenoms(userRequest.getPrenoms())
+                    .username(userRequest.getUsername())
                     .email(userRequest.getEmail())
                     .tel1(userRequest.getTel1())
                     .tel2(userRequest.getTel2())
@@ -73,13 +74,13 @@ public class UserServiceImpl implements UserService {
 
             if(userRequest.getRoles() != null && !userRequest.getRoles().isEmpty()){
                 List<Role> permissions = new ArrayList<>();
-                userRequest.getRoles().forEach(permissionResponse -> {
+                userRequest.getRoles().forEach(permissionRequest -> {
                     // Traiter le cas où la permission n'est pas trouvée
-                    roleRepository.findByName(permissionResponse.getName())
+                    roleRepository.findByName(permissionRequest.getName())
                             .ifPresentOrElse(
                                     permissions::add, // Ajouter la permission si elle existe
                                     () -> {
-                                        throw new RuntimeException("Role non trouvé: " + permissionResponse.getName());
+                                        throw new RuntimeException("Role non trouvé: " + permissionRequest.getName());
                                     }
                             );
                 });
@@ -92,13 +93,13 @@ public class UserServiceImpl implements UserService {
 
             if(userRequest.getPermissions() != null && !userRequest.getPermissions().isEmpty()){
                 List<Permission> permissions = new ArrayList<>();
-                userRequest.getPermissions().forEach(permissionResponse -> {
+                userRequest.getPermissions().forEach(permissionRequest -> {
                     // Traiter le cas où la permission n'est pas trouvée
-                    permissionRepository.findByTitre(permissionResponse.getTitre())
+                    permissionRepository.findByTitre(permissionRequest.getTitre())
                             .ifPresentOrElse(
                                     permissions::add, // Ajouter la permission si elle existe
                                     () -> {
-                                        throw new RuntimeException("Permission non trouvée: " + permissionResponse.getTitre());
+                                        throw new RuntimeException("Permission non trouvée: " + permissionRequest.getTitre());
                                     }
                             );
                 });
@@ -135,6 +136,7 @@ public class UserServiceImpl implements UserService {
                 user = User.builder()
                         .nom(userRequest.getNom())
                         .prenoms(userRequest.getPrenoms())
+                        .username(userRequest.getUsername())
                         .email(userRequest.getEmail())
                         .tel1(userRequest.getTel1())
                         .tel2(userRequest.getTel2())
@@ -148,13 +150,13 @@ public class UserServiceImpl implements UserService {
 
                 if(userRequest.getRoles() != null && !userRequest.getRoles().isEmpty()){
                     List<Role> permissions = new ArrayList<>();
-                    userRequest.getRoles().forEach(permissionResponse -> {
+                    userRequest.getRoles().forEach(permissionRequest -> {
                         // Traiter le cas où la permission n'est pas trouvée
-                        roleRepository.findByName(permissionResponse.getName())
+                        roleRepository.findByName(permissionRequest.getName())
                                 .ifPresentOrElse(
                                         permissions::add, // Ajouter la permission si elle existe
                                         () -> {
-                                            throw new RuntimeException("Role non trouvé: " + permissionResponse.getName());
+                                            throw new RuntimeException("Role non trouvé: " + permissionRequest.getName());
                                         }
                                 );
                     });
@@ -167,13 +169,13 @@ public class UserServiceImpl implements UserService {
 
                 if(userRequest.getPermissions() != null && !userRequest.getPermissions().isEmpty()){
                     List<Permission> permissions = new ArrayList<>();
-                    userRequest.getPermissions().forEach(permissionResponse -> {
+                    userRequest.getPermissions().forEach(permissionRequest -> {
                         // Traiter le cas où la permission n'est pas trouvée
-                        permissionRepository.findByTitre(permissionResponse.getTitre())
+                        permissionRepository.findByTitre(permissionRequest.getTitre())
                                 .ifPresentOrElse(
                                         permissions::add, // Ajouter la permission si elle existe
                                         () -> {
-                                            throw new RuntimeException("Permission non trouvée: " + permissionResponse.getTitre());
+                                            throw new RuntimeException("Permission non trouvée: " + permissionRequest.getTitre());
                                         }
                                 );
                     });
@@ -247,6 +249,7 @@ public class UserServiceImpl implements UserService {
                 ));
         user.setNom(userRequest.getNom());
         user.setPrenoms(userRequest.getPrenoms());
+        user.setUsername(userRequest.getUsername());
         user.setEmail(userRequest.getEmail());
         user.setTel1(userRequest.getTel1());
         user.setTel2(userRequest.getTel2());
