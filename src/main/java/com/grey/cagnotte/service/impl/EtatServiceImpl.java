@@ -30,14 +30,14 @@ public class EtatServiceImpl implements EtatService {
     public long addEtat(EtatRequest etatRequest) {
         log.info(name+"addEtat is called");
         State state;
-        if(!etatRepository.existByLibelle(etatRequest.getLibelle())) {
+        if(!etatRepository.existByLibelle(etatRequest.getLabel())) {
             state = State.builder()
-                    .libelle(etatRequest.getLibelle())
-                    .slug(Str.slug(etatRequest.getLibelle()))
+                    .libelle(etatRequest.getLabel())
+                    .slug(Str.slug(etatRequest.getLabel()))
                     .build();
             etatRepository.save(state);
         }else {
-            state = etatRepository.findByLibelle(etatRequest.getLibelle()).orElseThrow();
+            state = etatRepository.findByLibelle(etatRequest.getLabel()).orElseThrow();
             editEtat(etatRequest, state.getId());
         }
         log.info(name+"addEtat | Etat Created | Id : " + state.getId());
@@ -50,10 +50,10 @@ public class EtatServiceImpl implements EtatService {
         log.info(name+"addEtats is called");
         etatRequests.forEach(etatRequest ->{
             State state;
-            if(!etatRepository.existByLibelle(etatRequest.getLibelle())) {
+            if(!etatRepository.existByLibelle(etatRequest.getLabel())) {
                 state = State.builder()
-                        .libelle(etatRequest.getLibelle())
-                        .slug(Str.slug(etatRequest.getLibelle()))
+                        .libelle(etatRequest.getLabel())
+                        .slug(Str.slug(etatRequest.getLabel()))
                         .build();
                 etatRepository.save(state);
             }
@@ -84,8 +84,8 @@ public class EtatServiceImpl implements EtatService {
         log.info(name+"editEtat is called");
         State state = etatRepository.findById(etatId)
                 .orElseThrow(()-> new CagnotteCustomException("Etat with given id not found", NOT_FOUND));
-        state.setSlug(Str.slug(etatRequest.getLibelle()));
-        state.setLibelle(etatRequest.getLibelle());
+        state.setSlug(Str.slug(etatRequest.getLabel()));
+        state.setLibelle(etatRequest.getLabel());
         etatRepository.save(state);
         log.info(name+"editEtat | Etat Updated | Etat Id: "+ state.getId());
     }

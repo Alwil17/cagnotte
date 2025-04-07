@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "participation_type")
 @Data
@@ -19,6 +21,9 @@ public class ParticipationType {
     private long id;
 
     @Column(nullable = false, unique = true)
-    private String nom;
+    private String name;
+
+    @OneToMany(mappedBy = "type")
+    private List<Cagnotte> cagnottes;
 }
 

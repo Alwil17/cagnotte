@@ -29,16 +29,16 @@ public class User implements UserDetails {
     private long id;
 
     @Max(value = 50)
-    private String nom;
+    private String lastname;
     @Max(value = 100)
-    private String prenoms;
+    private String firstname;
     @Column(nullable = false, unique = true)
     private String email;
     @Max(value = 20)
     private String tel1;
     @Max(value = 20)
     private String tel2;
-    private String adresse;
+    private String address;
     private String password_hash;
     private String type;
     @Column(nullable = false, unique = true)
@@ -79,7 +79,7 @@ public class User implements UserDetails {
                     Stream<GrantedAuthority> roleAuthorities = Stream.of(new SimpleGrantedAuthority("ROLE_" + role.getName()));
                     // Ajout des permissions comme autorités
                     Stream<GrantedAuthority> permissionAuthorities = role.getPermissions().stream()
-                            .map(permission -> new SimpleGrantedAuthority(permission.getTitre()));
+                            .map(permission -> new SimpleGrantedAuthority(permission.getTitle()));
                     return Stream.concat(roleAuthorities, permissionAuthorities);
                 })
                 .collect(Collectors.toSet());

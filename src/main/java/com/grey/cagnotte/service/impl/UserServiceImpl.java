@@ -57,13 +57,13 @@ public class UserServiceImpl implements UserService {
         User user;
         if(!userRepository.existsByEmailEquals(userRequest.getEmail())){
             user = User.builder()
-                    .nom(userRequest.getNom())
-                    .prenoms(userRequest.getPrenoms())
+                    .nom(userRequest.getLastname())
+                    .prenoms(userRequest.getFirstname())
                     .username(userRequest.getUsername())
                     .email(userRequest.getEmail())
                     .tel1(userRequest.getTel1())
                     .tel2(userRequest.getTel2())
-                    .adresse(userRequest.getAdresse())
+                    .adresse(userRequest.getAddress())
                     .type(type)
                     .build();
 
@@ -135,13 +135,13 @@ public class UserServiceImpl implements UserService {
             User user;
             if(!userRepository.existsByEmailEquals(userRequest.getEmail())){
                 user = User.builder()
-                        .nom(userRequest.getNom())
-                        .prenoms(userRequest.getPrenoms())
+                        .nom(userRequest.getLastname())
+                        .prenoms(userRequest.getFirstname())
                         .username(userRequest.getUsername())
                         .email(userRequest.getEmail())
                         .tel1(userRequest.getTel1())
                         .tel2(userRequest.getTel2())
-                        .adresse(userRequest.getAdresse())
+                        .adresse(userRequest.getAddress())
                         .type(type)
                         .build();
 
@@ -256,13 +256,13 @@ public class UserServiceImpl implements UserService {
                         "User with given Id not found",
                         NOT_FOUND
                 ));
-        user.setNom(userRequest.getNom());
-        user.setPrenoms(userRequest.getPrenoms());
+        user.setNom(userRequest.getLastname());
+        user.setPrenoms(userRequest.getFirstname());
         user.setUsername(userRequest.getUsername());
         user.setEmail(userRequest.getEmail());
         user.setTel1(userRequest.getTel1());
         user.setTel2(userRequest.getTel2());
-        user.setAdresse(userRequest.getAdresse());
+        user.setAdresse(userRequest.getAddress());
         if(userRequest.getPassword() != null && !userRequest.getPassword().isBlank()){
             user.setPassword_hash(passwordEncoder.encode(userRequest.getPassword()));
         }

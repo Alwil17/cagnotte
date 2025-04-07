@@ -44,10 +44,6 @@ public class Participation {
     @UpdateTimestamp
     private LocalDateTime updated_at;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "type_id", nullable = false)
-    private ParticipationType type;
-
     @OneToMany(mappedBy = "participation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transaction> transactions;
 

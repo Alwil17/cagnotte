@@ -7,5 +7,5 @@ import lombok.Data;
 @Data
 @Builder
 public class EtatRequest {
-    public String libelle;
+    public String label;
 }
