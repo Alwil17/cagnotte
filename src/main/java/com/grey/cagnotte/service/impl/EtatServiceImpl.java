@@ -1,6 +1,6 @@
 package com.grey.cagnotte.service.impl;
 
-import com.grey.cagnotte.entity.Etat;
+import com.grey.cagnotte.entity.State;
 import com.grey.cagnotte.exception.CagnotteCustomException;
 import com.grey.cagnotte.payload.request.EtatRequest;
 import com.grey.cagnotte.payload.response.EtatResponse;
@@ -24,38 +24,38 @@ public class EtatServiceImpl implements EtatService {
     private final EtatRepository etatRepository;
 
     @Override
-    public List<Etat> getAllEtats(){return etatRepository.findAll();}
+    public List<State> getAllEtats(){return etatRepository.findAll();}
 
     @Override
     public long addEtat(EtatRequest etatRequest) {
         log.info(name+"addEtat is called");
-        Etat etat;
+        State state;
         if(!etatRepository.existByLibelle(etatRequest.getLibelle())) {
-            etat = Etat.builder()
+            state = State.builder()
                     .libelle(etatRequest.getLibelle())
                     .slug(Str.slug(etatRequest.getLibelle()))
                     .build();
-            etatRepository.save(etat);
+            etatRepository.save(state);
         }else {
-            etat= etatRepository.findByLibelle(etatRequest.getLibelle()).orElseThrow();
-            editEtat(etatRequest, etat.getId());
+            state = etatRepository.findByLibelle(etatRequest.getLibelle()).orElseThrow();
+            editEtat(etatRequest, state.getId());
         }
-        log.info(name+"addEtat | Etat Created | Id : " + etat.getId());
+        log.info(name+"addEtat | Etat Created | Id : " + state.getId());
 
-        return etat.getId();
+        return state.getId();
     }
 
     @Override
     public void addEtat(List<EtatRequest> etatRequests) {
         log.info(name+"addEtats is called");
         etatRequests.forEach(etatRequest ->{
-            Etat etat;
+            State state;
             if(!etatRepository.existByLibelle(etatRequest.getLibelle())) {
-                etat = Etat.builder()
+                state = State.builder()
                         .libelle(etatRequest.getLibelle())
                         .slug(Str.slug(etatRequest.getLibelle()))
                         .build();
-                etatRepository.save(etat);
+                etatRepository.save(state);
             }
         });
         log.info(name+"addEtats | Etats Created");
@@ -65,14 +65,14 @@ public class EtatServiceImpl implements EtatService {
     public EtatResponse getEtatById(long etatId) {
         log.info(name+"getEtatById is called");
 
-        Etat etat
+        State state
                 = etatRepository.findById(etatId)
                 .orElseThrow(
                         () -> new CagnotteCustomException("Etat with given id not found", NOT_FOUND));
 
         EtatResponse etatResponse = new EtatResponse();
 
-        copyProperties(etat, etatResponse);
+        copyProperties(state, etatResponse);
 
         log.info(name+"getEtatById | etatResponse :" + etatResponse.toString());
 
@@ -82,12 +82,12 @@ public class EtatServiceImpl implements EtatService {
     @Override
     public void editEtat(EtatRequest etatRequest, long etatId) {
         log.info(name+"editEtat is called");
-        Etat etat= etatRepository.findById(etatId)
+        State state = etatRepository.findById(etatId)
                 .orElseThrow(()-> new CagnotteCustomException("Etat with given id not found", NOT_FOUND));
-        etat.setSlug(Str.slug(etatRequest.getLibelle()));
-        etat.setLibelle(etatRequest.getLibelle());
-        etatRepository.save(etat);
-        log.info(name+"editEtat | Etat Updated | Etat Id: "+etat.getId());
+        state.setSlug(Str.slug(etatRequest.getLibelle()));
+        state.setLibelle(etatRequest.getLibelle());
+        etatRepository.save(state);
+        log.info(name+"editEtat | Etat Updated | Etat Id: "+ state.getId());
     }
 
     @Override

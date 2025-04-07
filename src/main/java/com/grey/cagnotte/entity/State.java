@@ -15,16 +15,16 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Etat {
+public class State {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Max(value = 100)
-    private String libelle;
+    private String label;
     private String slug;
 
 
-    @OneToMany(mappedBy = "etat")
+    @OneToMany(mappedBy = "state")
     @JsonIgnore
     private List<Cagnotte> cagnottes;
 }

@@ -1,6 +1,6 @@
 package com.grey.cagnotte.controller;
 
-import com.grey.cagnotte.entity.Etat;
+import com.grey.cagnotte.entity.State;
 import com.grey.cagnotte.payload.request.EtatRequest;
 import com.grey.cagnotte.payload.response.EtatResponse;
 import com.grey.cagnotte.service.EtatService;
@@ -21,7 +21,7 @@ public class EtatController {
     private final EtatService etatService;
 
     @GetMapping
-    public ResponseEntity<List<Etat>> getEtats(){
+    public ResponseEntity<List<State>> getEtats(){
         log.info(name+"getEtats is called");
 
         return new ResponseEntity<>(etatService.getAllEtats(), HttpStatus.OK);

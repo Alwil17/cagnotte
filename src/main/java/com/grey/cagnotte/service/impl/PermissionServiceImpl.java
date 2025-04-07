@@ -2,7 +2,6 @@ package com.grey.cagnotte.service.impl;
 
 import com.grey.cagnotte.entity.Permission;
 import com.grey.cagnotte.payload.request.PermissionRequest;
-import com.grey.cagnotte.payload.response.PermissionResponse;
 import com.grey.cagnotte.repository.PermissionRepository;
 import com.grey.cagnotte.service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +17,12 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public Permission createPermission(PermissionRequest permissionRequest) {
-        if (permissionRepository.findByTitre(permissionRequest.getTitre()).isPresent()) {
+        if (permissionRepository.findByTitle(permissionRequest.getTitle()).isPresent()) {
             throw new IllegalArgumentException("Permission with this title already exists.");
         }
 
         Permission permission = Permission.builder()
-                .titre(permissionRequest.getTitre())
+                .titre(permissionRequest.getTitle())
                 .build();
 
         return permissionRepository.save(permission);
@@ -39,7 +38,7 @@ public class PermissionServiceImpl implements PermissionService {
     public void updatePermission(PermissionRequest permissionRequest, long id) {
         Permission permission = permissionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Permission not found."));
-        permission.setTitre(permissionRequest.getTitre());
+        permission.setTitre(permissionRequest.getTitle());
         permissionRepository.save(permission);
     }
 
@@ -52,12 +51,12 @@ public class PermissionServiceImpl implements PermissionService {
     public void addPermissions(List<PermissionRequest> permissionRequests) {
         if(permissionRequests != null && !permissionRequests.isEmpty()){
             for (PermissionRequest permissionRequest : permissionRequests) {
-                if (permissionRepository.findByTitre(permissionRequest.getTitre()).isPresent()) {
+                if (permissionRepository.findByTitle(permissionRequest.getTitle()).isPresent()) {
                     throw new IllegalArgumentException("Permission with this title already exists.");
                 }
 
                 Permission permission = Permission.builder()
-                        .titre(permissionRequest.getTitre())
+                        .titre(permissionRequest.getTitle())
                         .build();
 
                 permissionRepository.save(permission);

@@ -1,6 +1,7 @@
 package com.grey.cagnotte.controller;
 
 import com.grey.cagnotte.entity.Permission;
+import com.grey.cagnotte.payload.request.PermissionRequest;
 import com.grey.cagnotte.payload.response.PermissionResponse;
 import com.grey.cagnotte.service.PermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,8 @@ public class PermissionController {
     private PermissionService permissionService;
 
     @PostMapping
-    public ResponseEntity<Permission> createPermission(@RequestBody PermissionResponse permissionResponse) {
-        return ResponseEntity.ok(permissionService.createPermission(permissionResponse));
+    public ResponseEntity<Permission> createPermission(@RequestBody PermissionRequest permissionRequest) {
+        return ResponseEntity.ok(permissionService.createPermission(permissionRequest));
     }
 
     @GetMapping("/{id}")
@@ -28,8 +29,8 @@ public class PermissionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updatePermission(@PathVariable long id, @RequestBody PermissionResponse permissionResponse) {
-        permissionService.updatePermission(permissionResponse, id);
+    public ResponseEntity<Void> updatePermission(@PathVariable long id, @RequestBody PermissionRequest permissionRequest) {
+        permissionService.updatePermission(permissionRequest, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

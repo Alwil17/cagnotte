@@ -22,26 +22,26 @@ public class Cagnotte {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String libelle;
+    private String label;
     private String slug;
     private String reference;
-    private String organisateur;
-    private String concerne;
+    private String organizer;
+    private String concerns;
     @Column(name = "date_creation")
     private LocalDateTime dateCreation;
-    @Column(name = "date_echeance")
-    private LocalDateTime dateEcheance;
-    @Column(name = "montant_objectif")
-    private double montantObjectif = 0;
-    @Column(name = "montantCollecte")
-    private double montantCollecte = 0;
-    @Column(name = "montant_participation")
-    private double montantParticipation;
-    @Column(name = "message_personnalise")
-    private String messagePersonnalise;
+    @Column(name = "date_due")
+    private LocalDateTime dateExit;
+    @Column(name = "goal_amount")
+    private double goalAmount = 0;
+    @Column(name = "collected_amount")
+    private double collectedAmount = 0;
+    @Column(name = "participation_amount")
+    private double participationAmount;
+    @Column(name = "personalized_message")
+    private String personalizedMessage;
     private String image;
-    @Column(name = "lieu_evenement")
-    private String lieuEvenement;
+    @Column(name = "event_location")
+    private String eventLocation;
     private String url;
 
     @CreationTimestamp
@@ -55,12 +55,12 @@ public class Cagnotte {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "etat_id")
-    private Etat etat;
+    @JoinColumn(name = "state_id")
+    private State state;
 
     @ManyToOne
-    @JoinColumn(name = "categorie_id")
-    private Categorie categorie;
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @OneToMany(mappedBy = "cagnotte")
     @JsonIgnore

@@ -45,11 +45,11 @@ public class RoleServiceImpl implements RoleService {
             List<Permission> permissions = new ArrayList<>();
             roleRequest.getPermissions().forEach(permissionResponse -> {
                 // Traiter le cas où la permission n'est pas trouvée
-                permissionRepository.findByTitre(permissionResponse.getTitre())
+                permissionRepository.findByTitle(permissionResponse.getTitle())
                         .ifPresentOrElse(
                                 permissions::add, // Ajouter la permission si elle existe
                                 () -> {
-                                    throw new RuntimeException("Permission non trouvée: " + permissionResponse.getTitre());
+                                    throw new RuntimeException("Permission non trouvée: " + permissionResponse.getTitle());
                                 }
                         );
             });
@@ -80,11 +80,11 @@ public class RoleServiceImpl implements RoleService {
                 List<Permission> permissions = new ArrayList<>();
                 roleRequest.getPermissions().forEach(permissionResponse -> {
                     // Traiter le cas où la permission n'est pas trouvée
-                    permissionRepository.findByTitre(permissionResponse.getTitre())
+                    permissionRepository.findByTitle(permissionResponse.getTitle())
                             .ifPresentOrElse(
                                     permissions::add, // Ajouter la permission si elle existe
                                     () -> {
-                                        throw new RuntimeException("Permission non trouvée: " + permissionResponse.getTitre());
+                                        throw new RuntimeException("Permission non trouvée: " + permissionResponse.getTitle());
                                     }
                             );
                 });
@@ -130,11 +130,11 @@ public class RoleServiceImpl implements RoleService {
             List<Permission> permissions = new ArrayList<>();
             roleRequest.getPermissions().forEach(permissionResponse -> {
                 // Traiter le cas où la permission n'est pas trouvée
-                permissionRepository.findByTitre(permissionResponse.getTitre())
+                permissionRepository.findByTitle(permissionResponse.getTitle())
                         .ifPresentOrElse(
                                 permissions::add, // Ajouter la permission si elle existe
                                 () -> {
-                                    throw new RuntimeException("Permission non trouvée: " + permissionResponse.getTitre());
+                                    throw new RuntimeException("Permission non trouvée: " + permissionResponse.getTitle());
                                 }
                         );
             });

@@ -40,16 +40,16 @@ public class DatabaseSeeder {
         String sql = "SELECT c.titre FROM `user` c";
         List<Permission> rs = jdbcTemplate.query(sql, (resultSet, rowNum) -> null);
         if(rs == null || rs.size() <= 0) {
-            PermissionRequest ar1 = PermissionRequest.builder().titre("ADD_USER").build();
-            PermissionRequest ar2 = PermissionRequest.builder().titre("DELETE_USER").build();
-            PermissionRequest ar3 = PermissionRequest.builder().titre("ADD_ROLE").build();
-            PermissionRequest ar4 = PermissionRequest.builder().titre("ADD_PERMISSION").build();
-            PermissionRequest ar5 = PermissionRequest.builder().titre("DELETE_PERMISSION").build();
-            PermissionRequest ar6 = PermissionRequest.builder().titre("DELETE_ROLE").build();
-            PermissionRequest ar7 = PermissionRequest.builder().titre("ADD_CATEGORY").build();
-            PermissionRequest ar8 = PermissionRequest.builder().titre("DELETE_CATEGORY").build();
-            PermissionRequest ar9 = PermissionRequest.builder().titre("ADD_ETAT").build();
-            PermissionRequest ar10 = PermissionRequest.builder().titre("DELETE_ETAT").build();
+            PermissionRequest ar1 = PermissionRequest.builder().title("ADD_USER").build();
+            PermissionRequest ar2 = PermissionRequest.builder().title("DELETE_USER").build();
+            PermissionRequest ar3 = PermissionRequest.builder().title("ADD_ROLE").build();
+            PermissionRequest ar4 = PermissionRequest.builder().title("ADD_PERMISSION").build();
+            PermissionRequest ar5 = PermissionRequest.builder().title("DELETE_PERMISSION").build();
+            PermissionRequest ar6 = PermissionRequest.builder().title("DELETE_ROLE").build();
+            PermissionRequest ar7 = PermissionRequest.builder().title("ADD_CATEGORY").build();
+            PermissionRequest ar8 = PermissionRequest.builder().title("DELETE_CATEGORY").build();
+            PermissionRequest ar9 = PermissionRequest.builder().title("ADD_ETAT").build();
+            PermissionRequest ar10 = PermissionRequest.builder().title("DELETE_ETAT").build();
 
             permissionService.addPermissions(Arrays.asList(ar1,ar2,ar3,ar4,ar5,ar6,ar7,ar8,ar9,ar10));
 

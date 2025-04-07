@@ -21,22 +21,22 @@ public class Participation {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
 
-    private double montant;
+    private double amount;
 
     @Column(name = "date_participation", nullable = false)
     private LocalDateTime dateParticipation;
 
-    @Column(name = "nom_participant")
-    private String nomParticipant;
-    @Column(name = "message_personnalise")
-    private String messagePersonnalise;
-    @Column(name = "is_anonyme")
-    private boolean isAnonyme = false;
-    @Column(name = "show_montant")
-    private boolean showMontant = true;
+    @Column(name = "participant_name")
+    private String participantName;
+    @Column(name = "custom_message")
+    private String customMessage;
+    @Column(name = "is_anonymous")
+    private boolean isAnonymous = false;
+    @Column(name = "show_amount")
+    private boolean showAmount = true;
 
     @Column(name = "participant_id")
-    private Long participantId;
+    private long participantId;
 
     @CreationTimestamp
     private LocalDateTime created_at;

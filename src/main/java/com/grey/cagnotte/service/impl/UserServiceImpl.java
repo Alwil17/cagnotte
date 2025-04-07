@@ -15,7 +15,6 @@ import com.grey.cagnotte.repository.UserRepository;
 import com.grey.cagnotte.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -95,11 +94,11 @@ public class UserServiceImpl implements UserService {
                 List<Permission> permissions = new ArrayList<>();
                 userRequest.getPermissions().forEach(permissionRequest -> {
                     // Traiter le cas où la permission n'est pas trouvée
-                    permissionRepository.findByTitre(permissionRequest.getTitre())
+                    permissionRepository.findByTitle(permissionRequest.getTitle())
                             .ifPresentOrElse(
                                     permissions::add, // Ajouter la permission si elle existe
                                     () -> {
-                                        throw new RuntimeException("Permission non trouvée: " + permissionRequest.getTitre());
+                                        throw new RuntimeException("Permission non trouvée: " + permissionRequest.getTitle());
                                     }
                             );
                 });
@@ -171,11 +170,11 @@ public class UserServiceImpl implements UserService {
                     List<Permission> permissions = new ArrayList<>();
                     userRequest.getPermissions().forEach(permissionRequest -> {
                         // Traiter le cas où la permission n'est pas trouvée
-                        permissionRepository.findByTitre(permissionRequest.getTitre())
+                        permissionRepository.findByTitle(permissionRequest.getTitle())
                                 .ifPresentOrElse(
                                         permissions::add, // Ajouter la permission si elle existe
                                         () -> {
-                                            throw new RuntimeException("Permission non trouvée: " + permissionRequest.getTitre());
+                                            throw new RuntimeException("Permission non trouvée: " + permissionRequest.getTitle());
                                         }
                                 );
                     });
