@@ -15,6 +15,8 @@ import com.grey.cagnotte.repository.UserRepository;
 import com.grey.cagnotte.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -203,6 +205,14 @@ public class UserServiceImpl implements UserService {
                         () -> new CagnotteCustomException("User with given Id not found", NOT_FOUND));
 
         return mapToResponse(user);
+    }
+
+    @Override
+    public User getMe() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        org.springframework.security.core.userdetails.User userConnected = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();  // Le username du principal authentifié
+
+        return userRepository.findByUsername(userConnected.getUsername()).orElseThrow();
     }
 
     @Override

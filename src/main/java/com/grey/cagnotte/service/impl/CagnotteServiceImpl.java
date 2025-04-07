@@ -1,7 +1,5 @@
 package com.grey.cagnotte.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.grey.cagnotte.entity.Cagnotte;
 import com.grey.cagnotte.entity.User;
 import com.grey.cagnotte.exception.CagnotteCustomException;
@@ -11,6 +9,7 @@ import com.grey.cagnotte.payload.response.UserResponse;
 import com.grey.cagnotte.repository.CagnotteRepository;
 import com.grey.cagnotte.repository.UserRepository;
 import com.grey.cagnotte.service.CagnotteService;
+import com.grey.cagnotte.service.UserService;
 import com.grey.cagnotte.utils.Str;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -28,7 +27,7 @@ public class CagnotteServiceImpl implements CagnotteService {
     private final String NOT_FOUND = "CAGNOTTE_NOT_FOUND";
 
     private final CagnotteRepository cagnotteRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
 
     @Override
@@ -69,26 +68,22 @@ public class CagnotteServiceImpl implements CagnotteService {
     public long addCagnotte(CagnotteRequest cagnotteRequest) {
         log.info("CagnotteServiceImpl | addCagnotte is called");
 
-        User user = null;
-        if(userRepository.existsByEmailEquals(cagnotteRequest.getUser_email())){
-            user = userRepository.findByEmailEquals(cagnotteRequest.getUser_email()).orElseThrow();
-        }
+        User user = userService.getMe();
 
         Cagnotte cagnotte = Cagnotte.builder()
-                .libelle(cagnotteRequest.getLibelle())
-                .slug(Str.slug(cagnotteRequest.getLibelle()))
+                .label(cagnotteRequest.getLabel())
+                .slug(Str.slug(cagnotteRequest.getLabel()))
                 .reference(cagnotteRequest.getReference())
-                .organisateur(cagnotteRequest.getOrganisateur())
-                .concerne(cagnotteRequest.getConcerne())
+                .organizer(cagnotteRequest.getOrganizer())
+                .concerns(cagnotteRequest.getConcerns())
                 .dateCreation(LocalDateTime.now())
-                .dateEcheance(cagnotteRequest.getDate_echeance())
-                .montantObjectif(cagnotteRequest.getMontant_objectif())
-                .montantCollecte(cagnotteRequest.getMontant_collecte())
-                .messagePersonnalise(cagnotteRequest.getMessage_personnalise())
+                .dateDue(cagnotteRequest.getDateDue())
+                .goalAmount(cagnotteRequest.getGoalAmount())
+                .collectedAmount(cagnotteRequest.getCollectedAmount())
+                .personalizedMessage(cagnotteRequest.getPersonalizedMessage())
                 .image(cagnotteRequest.getImage())
-                .lieuEvenement(cagnotteRequest.getLieu_evenement())
+                .eventLocation(cagnotteRequest.getEventLocation())
                 .url(cagnotteRequest.getUrl())
-                .created_at(LocalDateTime.now())
                 .build();
         // S'il n'y a pas d'utilisateur avec cet email,
         // il ne fera donc rien
@@ -104,28 +99,27 @@ public class CagnotteServiceImpl implements CagnotteService {
     public void editCagnotte(CagnotteRequest cagnotteRequest, long cagnotteId) {
         log.info("CagnotteServiceImpl | editCagnotte is called");
 
+        User user = userService.getMe();
+
         Cagnotte cagnotte
                 = cagnotteRepository.findById(cagnotteId)
                 .orElseThrow(() -> new CagnotteCustomException(
                         "Cagnotte with given Id not found",
                         NOT_FOUND
                 ));
-        User user = null;
-        if(userRepository.existsByEmailEquals(cagnotteRequest.getUser_email())){
-            user = userRepository.findByEmailEquals(cagnotteRequest.getUser_email()).orElseThrow();
-        }
-        cagnotte.setLibelle(cagnotteRequest.getLibelle());
-        cagnotte.setSlug(Str.slug(cagnotteRequest.getLibelle()));
+
+        cagnotte.setLabel(cagnotteRequest.getLabel());
+        cagnotte.setSlug(Str.slug(cagnotteRequest.getLabel()));
         cagnotte.setReference(cagnotteRequest.getReference());
-        cagnotte.setOrganisateur(cagnotteRequest.getOrganisateur());
-        cagnotte.setConcerne(cagnotteRequest.getConcerne());
-        cagnotte.setDateCreation(cagnotteRequest.getDate_creation());
-        cagnotte.setDateEcheance(cagnotteRequest.getDate_echeance());
-        cagnotte.setMontantObjectif(cagnotteRequest.getMontant_objectif());
-        cagnotte.setMontantCollecte(cagnotteRequest.getMontant_collecte());
-        cagnotte.setMessagePersonnalise(cagnotteRequest.getMessage_personnalise());
+        cagnotte.setOrganizer(cagnotteRequest.getOrganizer());
+        cagnotte.setConcerns(cagnotteRequest.getConcerns());
+        cagnotte.setDateCreation(cagnotteRequest.getDateCreation());
+        cagnotte.setDateDue(cagnotteRequest.getDateDue());
+        cagnotte.setGoalAmount(cagnotteRequest.getGoalAmount());
+        cagnotte.setCollectedAmount(cagnotteRequest.getCollectedAmount());
+        cagnotte.setPersonalizedMessage(cagnotteRequest.getPersonalizedMessage());
         cagnotte.setImage(cagnotteRequest.getImage());
-        cagnotte.setLieuEvenement(cagnotteRequest.getLieu_evenement());
+        cagnotte.setEventLocation(cagnotteRequest.getEventLocation());
         cagnotte.setUrl(cagnotteRequest.getUrl());
         cagnotte.setUpdated_at(LocalDateTime.now());
         // S'il n'y a pas d'utilisateur avec cet email,

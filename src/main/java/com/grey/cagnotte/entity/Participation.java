@@ -1,5 +1,6 @@
 package com.grey.cagnotte.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,5 +53,6 @@ public class Participation {
 
     @ManyToOne
     @JoinColumn(name = "cagnotte_id")
+    @JsonIgnore
     private Cagnotte cagnotte;
 }

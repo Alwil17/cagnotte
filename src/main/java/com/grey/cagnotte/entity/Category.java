@@ -28,7 +28,7 @@ public class Category {
   private boolean allowMessage;
   @Column(name = "allow_media")
   private boolean allowMedia;
-  @Column(name = "allow_location")
+  @Column(name = "allow_location ")
   private boolean allowLocation;
   @Column(name = "allow_url")
   private boolean allowUrl;

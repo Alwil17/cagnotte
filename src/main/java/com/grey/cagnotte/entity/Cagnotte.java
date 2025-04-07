@@ -30,7 +30,7 @@ public class Cagnotte {
     @Column(name = "date_creation")
     private LocalDateTime dateCreation;
     @Column(name = "date_due")
-    private LocalDateTime dateExit;
+    private LocalDateTime dateDue;
     @Column(name = "goal_amount")
     private double goalAmount = 0;
     @Column(name = "collected_amount")
@@ -63,7 +63,6 @@ public class Cagnotte {
     private Category category;
 
     @OneToMany(mappedBy = "cagnotte")
-    @JsonIgnore
     private List<Participation> participations;
 
 }
