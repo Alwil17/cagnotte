@@ -32,38 +32,38 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public long addRole(RoleRequest roleRequest) {
+    public Role addRole(RoleRequest roleRequest) {
         log.info("RoleServiceImpl | addRole is called");
         Role role
                 = Role.builder()
                 .name(roleRequest.getName())
                 .build();
-
-        //role = roleRepository.save(role);
-
-        if(roleRequest.getPermissions() != null && !roleRequest.getPermissions().isEmpty()){
-            List<Permission> permissions = new ArrayList<>();
-            roleRequest.getPermissions().forEach(permissionResponse -> {
-                // Traiter le cas où la permission n'est pas trouvée
-                permissionRepository.findByTitle(permissionResponse.getTitle())
-                        .ifPresentOrElse(
-                                permissions::add, // Ajouter la permission si elle existe
-                                () -> {
-                                    throw new RuntimeException("Permission non trouvée: " + permissionResponse.getTitle());
-                                }
-                        );
-            });
-            if (!permissions.isEmpty()) {
-                role.setPermissions(permissions);
-                log.info(permissions.size());
+        if(roleRepository.existsByNameEquals(roleRequest.getName())){
+            role = roleRepository.findByName(roleRequest.getName()).orElseThrow();
+        }else {
+            if(roleRequest.getPermissions() != null && !roleRequest.getPermissions().isEmpty()){
+                List<Permission> permissions = new ArrayList<>();
+                roleRequest.getPermissions().forEach(permissionResponse -> {
+                    // Traiter le cas où la permission n'est pas trouvée
+                    permissionRepository.findByTitle(permissionResponse.getTitle())
+                            .ifPresentOrElse(
+                                    permissions::add, // Ajouter la permission si elle existe
+                                    () -> {
+                                        throw new RuntimeException("Permission non trouvée: " + permissionResponse.getTitle());
+                                    }
+                            );
+                });
+                if (!permissions.isEmpty()) {
+                    role.setPermissions(permissions);
+                    //log.info(permissions.size());
+                }
             }
+
+            role = roleRepository.save(role);
         }
-
-        role = roleRepository.save(role);
-
         log.info("RoleServiceImpl | addRole | Role Created");
         log.info("RoleServiceImpl | addRole | Role Id : " + role.getId());
-        return role.getId();
+        return role;
     }
 
     @Override

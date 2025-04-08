@@ -36,7 +36,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Invalid username or password"));
 
         log.info("find user");
-        if (!user.is_active()) {
+        if (!user.isActive()) {
             log.info("not active");
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"User account is deactivated. Please contact the administrator.");
         }
@@ -50,7 +50,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .map(Role::getName) // Supposons que chaque rôle a un champ `name`
                 .collect(Collectors.toList());
         user.setLast_access_time(LocalDateTime.now());
-        user.set_active(true);
+        user.setActive(true);
         userRepository.save(user);
         return jwtTokenProvider.createToken(user.getUsername(), roles);
     }
@@ -62,7 +62,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         user.setPassword_hash(passwordEncoder.encode(user.getPassword()));
-        user.set_active(true); // Activate user by default
+        user.setActive(true); // Activate user by default
         return userRepository.save(user);
     }
 }

@@ -20,7 +20,6 @@ public class UserRequest {
     private String tel2;
     private String address;
     private String password;
-    private String type;
 
     private boolean is_active;
     private LocalDateTime last_access_time;

@@ -40,18 +40,17 @@ public class User implements UserDetails {
     private String tel2;
     private String address;
     private String password_hash;
-    private String type;
     @Column(nullable = false, unique = true)
     private String username;
-    @JsonProperty("is_active")
-    private boolean is_active;
+    @Column(name = "is_active")
+    private boolean isActive;
     private LocalDateTime last_access_time;
 
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Cagnotte> cagnottes;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.REFRESH })
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -59,12 +58,9 @@ public class User implements UserDetails {
     )
     private List<Role> roles;
 
-    /*@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<UserRole> user_roles;*/
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE, CascadeType.REFRESH })
     @JoinTable(
-            name = "user_permission",
+            name = "user_permissions",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id")
     )
@@ -112,6 +108,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.is_active;
+        return this.isActive;
     }
 }

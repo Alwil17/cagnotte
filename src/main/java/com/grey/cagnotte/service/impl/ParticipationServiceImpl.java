@@ -41,12 +41,12 @@ public class ParticipationServiceImpl implements ParticipationService {
 
 
         Participation participation = Participation.builder()
-                .montant(participationRequest.getAmount())
+                .amount(participationRequest.getAmount())
                 .dateParticipation(participationRequest.getDateParticipation())
-                .nomParticipant(participationRequest.getParticipantName())
-                .messagePersonnalise(participationRequest.getCustomMessage())
-                .isAnonyme(participationRequest.isAnonymous())
-                .showMontant(participationRequest.isShowAmount())
+                .participantName(participationRequest.getParticipantName())
+                .customMessage(participationRequest.getCustomMessage())
+                .isAnonymous(participationRequest.isAnonymous())
+                .showAmount(participationRequest.isShowAmount())
                 .cagnotte(cagnotteRepository.findById(participationRequest.getCagnotte_id()).get())
                 .created_at(LocalDateTime.now())
                 .build();
@@ -64,12 +64,12 @@ public class ParticipationServiceImpl implements ParticipationService {
         for (ParticipationRequest participationRequest: participationRequests) {
 
             Participation participation = Participation.builder()
-                    .montant(participationRequest.getAmount())
+                    .amount(participationRequest.getAmount())
                     .dateParticipation(participationRequest.getDateParticipation())
-                    .nomParticipant(participationRequest.getParticipantName())
-                    .messagePersonnalise(participationRequest.getCustomMessage())
-                    .isAnonyme(participationRequest.isAnonymous())
-                    .showMontant(participationRequest.isShowAmount())
+                    .participantName(participationRequest.getParticipantName())
+                    .customMessage(participationRequest.getCustomMessage())
+                    .isAnonymous(participationRequest.isAnonymous())
+                    .showAmount(participationRequest.isShowAmount())
                     .cagnotte(cagnotteRepository.findById(participationRequest.getCagnotte_id()).get())
                     .created_at(LocalDateTime.now())
                     .build();
@@ -90,12 +90,12 @@ public class ParticipationServiceImpl implements ParticipationService {
                         "Participation with given Id not found",
                         NOT_FOUND
                 ));
-        participation.setMontant(participationRequest.getAmount());
+        participation.setAmount(participationRequest.getAmount());
         participation.setDateParticipation(participationRequest.getDateParticipation());
-        participation.setNomParticipant(participationRequest.getParticipantName());
-        participation.setMessagePersonnalise(participationRequest.getCustomMessage());
-        participation.setAnonyme(participationRequest.isAnonymous());
-        participation.setShowMontant(participationRequest.isShowAmount());
+        participation.setParticipantName(participationRequest.getParticipantName());
+        participation.setCustomMessage(participationRequest.getCustomMessage());
+        participation.setAnonymous(participationRequest.isAnonymous());
+        participation.setShowAmount(participationRequest.isShowAmount());
         participation.setCagnotte(cagnotteRepository.findById(participationRequest.getCagnotte_id()).get());
         participation.setUpdated_at(LocalDateTime.now());
         participationRepository.save(participation);

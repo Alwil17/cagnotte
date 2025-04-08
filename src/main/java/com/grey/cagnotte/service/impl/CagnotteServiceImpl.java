@@ -113,7 +113,6 @@ public class CagnotteServiceImpl implements CagnotteService {
         cagnotte.setReference(cagnotteRequest.getReference());
         cagnotte.setOrganizer(cagnotteRequest.getOrganizer());
         cagnotte.setConcerns(cagnotteRequest.getConcerns());
-        cagnotte.setDateCreation(cagnotteRequest.getDateCreation());
         cagnotte.setDateDue(cagnotteRequest.getDateDue());
         cagnotte.setGoalAmount(cagnotteRequest.getGoalAmount());
         cagnotte.setCollectedAmount(cagnotteRequest.getCollectedAmount());

@@ -30,8 +30,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public long addCategory(CategoryRequest categoryRequest) {
         Category category;
-        if(categoryRepository.existsByLibelleEquals(categoryRequest.getLabel())){
-            category = categoryRepository.findByLibelle(categoryRequest.getLabel()).orElseThrow();
+        if(categoryRepository.existsByLabelEquals(categoryRequest.getLabel())){
+            category = categoryRepository.findByLabel(categoryRequest.getLabel()).orElseThrow();
             editCategory(categoryRequest, category.getId());
         }
         else {

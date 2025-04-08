@@ -48,23 +48,16 @@ public class UserServiceImpl implements UserService {
     public long addUser(UserRequest userRequest) {
         log.info("UserServiceImpl | addUser is called");
 
-        String type;
-        if(userRequest.getType() != null && !userRequest.getType().isBlank())
-            type = userRequest.getType();
-        else
-            type = "user";
-
         User user;
         if(!userRepository.existsByEmailEquals(userRequest.getEmail())){
             user = User.builder()
-                    .nom(userRequest.getLastname())
-                    .prenoms(userRequest.getFirstname())
+                    .lastname(userRequest.getLastname())
+                    .firstname(userRequest.getFirstname())
                     .username(userRequest.getUsername())
                     .email(userRequest.getEmail())
                     .tel1(userRequest.getTel1())
                     .tel2(userRequest.getTel2())
-                    .adresse(userRequest.getAddress())
-                    .type(type)
+                    .address(userRequest.getAddress())
                     .build();
 
             if(userRequest.getPassword() != null && !userRequest.getPassword().isBlank()){
@@ -74,20 +67,20 @@ public class UserServiceImpl implements UserService {
             //user = userRepository.save(user);
 
             if(userRequest.getRoles() != null && !userRequest.getRoles().isEmpty()){
-                List<Role> permissions = new ArrayList<>();
+                List<Role> roles = new ArrayList<>();
                 userRequest.getRoles().forEach(permissionRequest -> {
                     // Traiter le cas où la permission n'est pas trouvée
                     roleRepository.findByName(permissionRequest.getName())
                             .ifPresentOrElse(
-                                    permissions::add, // Ajouter la permission si elle existe
+                                    roles::add, // Ajouter la permission si elle existe
                                     () -> {
                                         throw new RuntimeException("Role non trouvé: " + permissionRequest.getName());
                                     }
                             );
                 });
-                if (!permissions.isEmpty()) {
-                    user.setRoles(permissions);
-                    log.info(permissions.size());
+                if (!roles.isEmpty()) {
+                    user.setRoles(roles);
+                    log.info(roles.size());
                     //user = userRepository.save(user);
                 }
             }
@@ -126,23 +119,16 @@ public class UserServiceImpl implements UserService {
         log.info("UserServiceImpl | addUser is called");
 
         for (UserRequest userRequest: userRequests) {
-            String type;
-            if(userRequest.getType() != null && !userRequest.getType().isBlank())
-                type = userRequest.getType();
-            else
-                type = "user";
-
             User user;
             if(!userRepository.existsByEmailEquals(userRequest.getEmail())){
                 user = User.builder()
-                        .nom(userRequest.getLastname())
-                        .prenoms(userRequest.getFirstname())
+                        .lastname(userRequest.getLastname())
+                        .firstname(userRequest.getFirstname())
                         .username(userRequest.getUsername())
                         .email(userRequest.getEmail())
                         .tel1(userRequest.getTel1())
                         .tel2(userRequest.getTel2())
-                        .adresse(userRequest.getAddress())
-                        .type(type)
+                        .address(userRequest.getAddress())
                         .build();
 
                 if(userRequest.getPassword() != null && !userRequest.getPassword().isBlank()){
@@ -256,17 +242,16 @@ public class UserServiceImpl implements UserService {
                         "User with given Id not found",
                         NOT_FOUND
                 ));
-        user.setNom(userRequest.getLastname());
-        user.setPrenoms(userRequest.getFirstname());
+        user.setLastname(userRequest.getLastname());
+        user.setFirstname(userRequest.getFirstname());
         user.setUsername(userRequest.getUsername());
         user.setEmail(userRequest.getEmail());
         user.setTel1(userRequest.getTel1());
         user.setTel2(userRequest.getTel2());
-        user.setAdresse(userRequest.getAddress());
+        user.setAddress(userRequest.getAddress());
         if(userRequest.getPassword() != null && !userRequest.getPassword().isBlank()){
             user.setPassword_hash(passwordEncoder.encode(userRequest.getPassword()));
         }
-        user.setType(userRequest.getType());
         userRepository.save(user);
 
         log.info("UserServiceImpl | editUser | User Updated | User Id :" + user.getId());
@@ -307,7 +292,7 @@ public class UserServiceImpl implements UserService {
         mapper.registerModule(new JavaTimeModule());
         userResponse = mapper.convertValue(user, UserResponse.class);
 
-        userResponse.set_active(user.is_active());
+        userResponse.setActive(user.isActive());
 
         return userResponse;
     }

@@ -22,7 +22,7 @@ public class PermissionServiceImpl implements PermissionService {
         }
 
         Permission permission = Permission.builder()
-                .titre(permissionRequest.getTitle())
+                .title(permissionRequest.getTitle())
                 .build();
 
         return permissionRepository.save(permission);
@@ -38,7 +38,7 @@ public class PermissionServiceImpl implements PermissionService {
     public void updatePermission(PermissionRequest permissionRequest, long id) {
         Permission permission = permissionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Permission not found."));
-        permission.setTitre(permissionRequest.getTitle());
+        permission.setTitle(permissionRequest.getTitle());
         permissionRepository.save(permission);
     }
 
@@ -56,7 +56,7 @@ public class PermissionServiceImpl implements PermissionService {
                 }
 
                 Permission permission = Permission.builder()
-                        .titre(permissionRequest.getTitle())
+                        .title(permissionRequest.getTitle())
                         .build();
 
                 permissionRepository.save(permission);

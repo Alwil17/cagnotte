@@ -18,6 +18,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -39,7 +41,7 @@ public class DatabaseSeeder {
     }
 
     private void seedPermissionsTable() {
-        String sql = "SELECT c.titre FROM `permission` c";
+        String sql = "SELECT c.title FROM `permissions` c";
         List<Permission> rs = jdbcTemplate.query(sql, (resultSet, rowNum) -> null);
         if (rs == null || rs.size() <= 0) {
             PermissionRequest ar1 = PermissionRequest.builder().title("ADD_USER").build();
@@ -50,8 +52,8 @@ public class DatabaseSeeder {
             PermissionRequest ar6 = PermissionRequest.builder().title("DELETE_ROLE").build();
             PermissionRequest ar7 = PermissionRequest.builder().title("ADD_CATEGORY").build();
             PermissionRequest ar8 = PermissionRequest.builder().title("DELETE_CATEGORY").build();
-            PermissionRequest ar9 = PermissionRequest.builder().title("ADD_ETAT").build();
-            PermissionRequest ar10 = PermissionRequest.builder().title("DELETE_ETAT").build();
+            PermissionRequest ar9 = PermissionRequest.builder().title("ADD_STATE").build();
+            PermissionRequest ar10 = PermissionRequest.builder().title("DELETE_STATE").build();
 
             permissionService.addPermissions(Arrays.asList(ar1, ar2, ar3, ar4, ar5, ar6, ar7, ar8, ar9, ar10));
 
@@ -62,7 +64,7 @@ public class DatabaseSeeder {
     }
 
     private void seedRoleTable() {
-        String sql = "SELECT c.name FROM `role` c";
+        String sql = "SELECT c.name FROM `roles` c";
         List<Role> rs = jdbcTemplate.query(sql, (resultSet, rowNum) -> null);
         if (rs == null || rs.size() <= 0) {
             RoleRequest ar1 = RoleRequest.builder().name("ADMIN").build();
@@ -78,7 +80,7 @@ public class DatabaseSeeder {
     }
 
     private void seedUserTable() {
-        String sql = "SELECT c.nom FROM `user` c";
+        String sql = "SELECT c.email FROM `user` c";
         List<User> rs = jdbcTemplate.query(sql, (resultSet, rowNum) -> null);
         if (rs == null || rs.size() <= 0) {
             UserRequest ar1 = UserRequest.builder()
@@ -88,10 +90,10 @@ public class DatabaseSeeder {
                     .email("gadmin@cagnotte.com")
                     .tel1("98574896")
                     .password("azerty@123")
-                    .type("admin")
+                    .roles(Collections.singletonList(RoleRequest.builder().name("SUPERADMIN").build()))
                     .build();
 
-            userService.addUser(Arrays.asList(ar1));
+            userService.addUser(ar1);
 
             log.info("users table seeded");
         } else {

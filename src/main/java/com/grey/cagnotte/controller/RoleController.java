@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
 public class RoleController {
     private final RoleService roleService;
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERADMIN')")
     @GetMapping
     public ResponseEntity<List<Role>> getAllRoles() {
 
@@ -26,17 +28,19 @@ public class RoleController {
         return new ResponseEntity<>(roleService.getAllRoles(), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADD_ROLE')")
     @PostMapping
-    public ResponseEntity<Long> addRole(@RequestBody RoleRequest roleRequest) {
+    public ResponseEntity<Role> addRole(@RequestBody RoleRequest roleRequest) {
 
         log.info("RoleController | addRole is called");
 
         log.info("RoleController | addRole | roleRequest : " + roleRequest.toString());
 
-        long roleId = roleService.addRole(roleRequest);
+        Role roleId = roleService.addRole(roleRequest);
         return new ResponseEntity<>(roleId, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<RoleResponse> getRoleById(@PathVariable("id") long roleId) {
 
@@ -49,19 +53,19 @@ public class RoleController {
         return new ResponseEntity<>(roleResponse, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Void> editRole(@RequestBody RoleRequest roleRequest,
                                          @PathVariable("id") long roleId
     ) {
-
         log.info("RoleController | editRole is called");
-
         log.info("RoleController | editRole | roleId : " + roleId);
 
         roleService.editRole(roleRequest, roleId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('DELETE_ROLE')")
     @DeleteMapping("/{id}")
     public void deleteRoleById(@PathVariable("id") long roleId) {
         roleService.deleteRoleById(roleId);
