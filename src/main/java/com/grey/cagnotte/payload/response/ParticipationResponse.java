@@ -14,10 +14,10 @@ import java.time.LocalDateTime;
 public class ParticipationResponse {
     private long id;
     private long cagnotte_id;
-    private double montant;
-    private LocalDateTime date_participation;
-    private String nom_participant;
-    private String message_personnalise;
-    private boolean is_anonyme;
-    private boolean show_montant;
+    private double amount;
+    private LocalDateTime dateParticipation;
+    private String participantName;
+    private String customMessage;
+    private boolean isAnonymous;
+    private boolean showAmount;
 }

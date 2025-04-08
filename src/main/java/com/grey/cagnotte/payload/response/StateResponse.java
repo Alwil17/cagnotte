@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class EtatResponse {
+public class StateResponse {
     public long id;
     public String libelle;
     public String slug;

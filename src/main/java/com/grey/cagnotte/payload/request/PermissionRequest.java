@@ -1,4 +1,4 @@
-package com.grey.cagnotte.payload.response;
+package com.grey.cagnotte.payload.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PermissionResponse {
-    private long id;
+public class PermissionRequest {
     private String title;
 }

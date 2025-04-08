@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,6 +42,15 @@ public class UserController {
         return new ResponseEntity<>(userId, HttpStatus.CREATED);
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> getUserDetails() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        org.springframework.security.core.userdetails.User userConnected = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();  // Le username du principal authentifié
+
+        UserResponse user = userService.getUserByUsername(userConnected.getUsername());
+        return ResponseEntity.ok(user);
+    }
+
     @GetMapping("/email/{email}")
     public ResponseEntity<UserResponse> getUserByEmail(@PathVariable("email") String userEmail) {
         log.info("UserController | getUserByEmail is called");
@@ -62,6 +74,7 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('DELETE_USER')")
     @DeleteMapping("/{id}")
     public void deleteUserById(@PathVariable("id") long userId) {
         userService.deleteUserById(userId);

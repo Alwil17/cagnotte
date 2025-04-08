@@ -16,15 +16,13 @@ import java.util.List;
 public class UserResponse {
     private long id;
     private String username;
-    private String nom;
-    private String prenoms;
+    private String lastname;
+    private String firstname;
     private String email;
     private String tel1;
     private String tel2;
-    private String adresse;
-    private String type;
-    @JsonProperty("is_active")
-    private boolean is_active;
+    private String address;
+    private boolean isActive;
     private LocalDateTime last_access_time;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;

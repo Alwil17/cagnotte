@@ -12,28 +12,28 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Categorie {
+public class Category {
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private long id ;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
   @Max(100)
-  private String libelle ;
+  private String label;
   private String slug ;
   private String icone ;
 
-  @Column(name = "allow_concerne")
-  private boolean allowConcerne;
+  @Column(name = "allow_concern")
+  private boolean allowConcern;
   @Column(name = "allow_message")
   private boolean allowMessage;
   @Column(name = "allow_media")
   private boolean allowMedia;
-  @Column(name = "allow_lieu")
-  private boolean allowLieu;
+  @Column(name = "allow_location ")
+  private boolean allowLocation;
   @Column(name = "allow_url")
   private boolean allowUrl;
 
-  @OneToMany(mappedBy = "categorie")
+  @OneToMany(mappedBy = "category")
   @JsonIgnore
   private List<Cagnotte> cagnottes;
 
