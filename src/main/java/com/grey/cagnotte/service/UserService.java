@@ -17,6 +17,8 @@ public interface UserService {
 
     UserResponse getUserById(long userId);
 
+    User getMe();
+
     UserResponse getUserByUsername(String username);
 
     void editUser(UserRequest userRequest, long userId);

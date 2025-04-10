@@ -10,19 +10,18 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class CagnotteRequest {
-    private String libelle;
+    private String label;
     private String reference;
-    private String organisateur;
-    private String concerne;
-    private LocalDateTime date_creation;
-    private LocalDateTime date_echeance;
-    private double montant_objectif;
-    private double montant_collecte;
-    private int type_participation;
-    private double montant_participation;
-    private String message_personnalise;
+    private String organizer;
+    private String concerns;
+    private LocalDateTime dateDue;
+    private double goalAmount;
+    private double collectedAmount;
+    private double participationAmount;
+    private String personalizedMessage;
     private String image;
-    private String lieu_evenement;
+    private String eventLocation;
     private String url;
-    private String user_email;
+    private String state_slug;
+    private long category_id;
 }

@@ -15,7 +15,8 @@ import com.grey.cagnotte.repository.UserRepository;
 import com.grey.cagnotte.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -47,22 +48,16 @@ public class UserServiceImpl implements UserService {
     public long addUser(UserRequest userRequest) {
         log.info("UserServiceImpl | addUser is called");
 
-        String type;
-        if(userRequest.getType() != null && !userRequest.getType().isBlank())
-            type = userRequest.getType();
-        else
-            type = "user";
-
         User user;
         if(!userRepository.existsByEmailEquals(userRequest.getEmail())){
             user = User.builder()
-                    .nom(userRequest.getNom())
-                    .prenoms(userRequest.getPrenoms())
+                    .lastname(userRequest.getLastname())
+                    .firstname(userRequest.getFirstname())
+                    .username(userRequest.getUsername())
                     .email(userRequest.getEmail())
                     .tel1(userRequest.getTel1())
                     .tel2(userRequest.getTel2())
-                    .adresse(userRequest.getAdresse())
-                    .type(type)
+                    .address(userRequest.getAddress())
                     .build();
 
             if(userRequest.getPassword() != null && !userRequest.getPassword().isBlank()){
@@ -72,33 +67,33 @@ public class UserServiceImpl implements UserService {
             //user = userRepository.save(user);
 
             if(userRequest.getRoles() != null && !userRequest.getRoles().isEmpty()){
-                List<Role> permissions = new ArrayList<>();
-                userRequest.getRoles().forEach(permissionResponse -> {
+                List<Role> roles = new ArrayList<>();
+                userRequest.getRoles().forEach(permissionRequest -> {
                     // Traiter le cas où la permission n'est pas trouvée
-                    roleRepository.findByName(permissionResponse.getName())
+                    roleRepository.findByName(permissionRequest.getName())
                             .ifPresentOrElse(
-                                    permissions::add, // Ajouter la permission si elle existe
+                                    roles::add, // Ajouter la permission si elle existe
                                     () -> {
-                                        throw new RuntimeException("Role non trouvé: " + permissionResponse.getName());
+                                        throw new RuntimeException("Role non trouvé: " + permissionRequest.getName());
                                     }
                             );
                 });
-                if (!permissions.isEmpty()) {
-                    user.setRoles(permissions);
-                    log.info(permissions.size());
+                if (!roles.isEmpty()) {
+                    user.setRoles(roles);
+                    log.info(roles.size());
                     //user = userRepository.save(user);
                 }
             }
 
             if(userRequest.getPermissions() != null && !userRequest.getPermissions().isEmpty()){
                 List<Permission> permissions = new ArrayList<>();
-                userRequest.getPermissions().forEach(permissionResponse -> {
+                userRequest.getPermissions().forEach(permissionRequest -> {
                     // Traiter le cas où la permission n'est pas trouvée
-                    permissionRepository.findByTitre(permissionResponse.getTitre())
+                    permissionRepository.findByTitle(permissionRequest.getTitle())
                             .ifPresentOrElse(
                                     permissions::add, // Ajouter la permission si elle existe
                                     () -> {
-                                        throw new RuntimeException("Permission non trouvée: " + permissionResponse.getTitre());
+                                        throw new RuntimeException("Permission non trouvée: " + permissionRequest.getTitle());
                                     }
                             );
                 });
@@ -124,22 +119,16 @@ public class UserServiceImpl implements UserService {
         log.info("UserServiceImpl | addUser is called");
 
         for (UserRequest userRequest: userRequests) {
-            String type;
-            if(userRequest.getType() != null && !userRequest.getType().isBlank())
-                type = userRequest.getType();
-            else
-                type = "user";
-
             User user;
             if(!userRepository.existsByEmailEquals(userRequest.getEmail())){
                 user = User.builder()
-                        .nom(userRequest.getNom())
-                        .prenoms(userRequest.getPrenoms())
+                        .lastname(userRequest.getLastname())
+                        .firstname(userRequest.getFirstname())
+                        .username(userRequest.getUsername())
                         .email(userRequest.getEmail())
                         .tel1(userRequest.getTel1())
                         .tel2(userRequest.getTel2())
-                        .adresse(userRequest.getAdresse())
-                        .type(type)
+                        .address(userRequest.getAddress())
                         .build();
 
                 if(userRequest.getPassword() != null && !userRequest.getPassword().isBlank()){
@@ -148,13 +137,13 @@ public class UserServiceImpl implements UserService {
 
                 if(userRequest.getRoles() != null && !userRequest.getRoles().isEmpty()){
                     List<Role> permissions = new ArrayList<>();
-                    userRequest.getRoles().forEach(permissionResponse -> {
+                    userRequest.getRoles().forEach(permissionRequest -> {
                         // Traiter le cas où la permission n'est pas trouvée
-                        roleRepository.findByName(permissionResponse.getName())
+                        roleRepository.findByName(permissionRequest.getName())
                                 .ifPresentOrElse(
                                         permissions::add, // Ajouter la permission si elle existe
                                         () -> {
-                                            throw new RuntimeException("Role non trouvé: " + permissionResponse.getName());
+                                            throw new RuntimeException("Role non trouvé: " + permissionRequest.getName());
                                         }
                                 );
                     });
@@ -167,13 +156,13 @@ public class UserServiceImpl implements UserService {
 
                 if(userRequest.getPermissions() != null && !userRequest.getPermissions().isEmpty()){
                     List<Permission> permissions = new ArrayList<>();
-                    userRequest.getPermissions().forEach(permissionResponse -> {
+                    userRequest.getPermissions().forEach(permissionRequest -> {
                         // Traiter le cas où la permission n'est pas trouvée
-                        permissionRepository.findByTitre(permissionResponse.getTitre())
+                        permissionRepository.findByTitle(permissionRequest.getTitle())
                                 .ifPresentOrElse(
                                         permissions::add, // Ajouter la permission si elle existe
                                         () -> {
-                                            throw new RuntimeException("Permission non trouvée: " + permissionResponse.getTitre());
+                                            throw new RuntimeException("Permission non trouvée: " + permissionRequest.getTitle());
                                         }
                                 );
                     });
@@ -202,6 +191,14 @@ public class UserServiceImpl implements UserService {
                         () -> new CagnotteCustomException("User with given Id not found", NOT_FOUND));
 
         return mapToResponse(user);
+    }
+
+    @Override
+    public User getMe() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        org.springframework.security.core.userdetails.User userConnected = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();  // Le username du principal authentifié
+
+        return userRepository.findByUsername(userConnected.getUsername()).orElseThrow();
     }
 
     @Override
@@ -245,16 +242,16 @@ public class UserServiceImpl implements UserService {
                         "User with given Id not found",
                         NOT_FOUND
                 ));
-        user.setNom(userRequest.getNom());
-        user.setPrenoms(userRequest.getPrenoms());
+        user.setLastname(userRequest.getLastname());
+        user.setFirstname(userRequest.getFirstname());
+        user.setUsername(userRequest.getUsername());
         user.setEmail(userRequest.getEmail());
         user.setTel1(userRequest.getTel1());
         user.setTel2(userRequest.getTel2());
-        user.setAdresse(userRequest.getAdresse());
+        user.setAddress(userRequest.getAddress());
         if(userRequest.getPassword() != null && !userRequest.getPassword().isBlank()){
             user.setPassword_hash(passwordEncoder.encode(userRequest.getPassword()));
         }
-        user.setType(userRequest.getType());
         userRepository.save(user);
 
         log.info("UserServiceImpl | editUser | User Updated | User Id :" + user.getId());
@@ -295,7 +292,7 @@ public class UserServiceImpl implements UserService {
         mapper.registerModule(new JavaTimeModule());
         userResponse = mapper.convertValue(user, UserResponse.class);
 
-        userResponse.set_active(user.is_active());
+        userResponse.setActive(user.isActive());
 
         return userResponse;
     }

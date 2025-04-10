@@ -31,7 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         if(user.getRoles() != null && !user.getRoles().isEmpty() && user.getPermissions() != null && !user.getPermissions().isEmpty()){
             authorities = user.getRoles().stream()
                     .flatMap(role -> role.getPermissions().stream())
-                    .map(permission -> new SimpleGrantedAuthority(permission.getTitre()))
+                    .map(permission -> new SimpleGrantedAuthority(permission.getTitle()))
                     .collect(Collectors.toList());
         }
 

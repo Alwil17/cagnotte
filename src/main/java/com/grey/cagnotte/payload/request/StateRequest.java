@@ -6,6 +6,6 @@ import lombok.Data;
 
 @Data
 @Builder
-public class EtatRequest {
-    public String libelle;
+public class StateRequest {
+    public String label;
 }

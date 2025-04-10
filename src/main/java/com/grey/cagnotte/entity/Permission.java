@@ -22,7 +22,7 @@ public class Permission {
     private long id;
 
     @Column(nullable = false, length = 255, unique = true)
-    private String titre;
+    private String title;
 
     @ManyToMany(mappedBy = "permissions", cascade = CascadeType.ALL)
     @JsonIgnore
