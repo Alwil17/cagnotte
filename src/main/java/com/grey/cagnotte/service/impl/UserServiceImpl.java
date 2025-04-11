@@ -57,6 +57,7 @@ public class UserServiceImpl implements UserService {
                     .email(userRequest.getEmail())
                     .tel1(userRequest.getTel1())
                     .tel2(userRequest.getTel2())
+                    .isActive(userRequest.is_active())
                     .address(userRequest.getAddress())
                     .build();
 
@@ -128,6 +129,7 @@ public class UserServiceImpl implements UserService {
                         .email(userRequest.getEmail())
                         .tel1(userRequest.getTel1())
                         .tel2(userRequest.getTel2())
+                        .isActive(userRequest.is_active())
                         .address(userRequest.getAddress())
                         .build();
 

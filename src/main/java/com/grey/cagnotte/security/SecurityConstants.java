@@ -2,7 +2,7 @@ package com.grey.cagnotte.security;
 
 public class SecurityConstants {
     public static final String[] PUBLIC_URLS = {
-            "/login",
+            "/auth/**",
             "/swagger-ui.html",
             "/swagger-ui/**",
             "/v3/api-docs/**",
@@ -11,8 +11,6 @@ public class SecurityConstants {
             "/categories",
             "/etats",
             "/cagnottes",
-            "/partitications",
-            "/users/**",
             "/error*",
     };
 }

@@ -1,5 +1,6 @@
 package com.grey.cagnotte.seeder;
 
+import com.grey.cagnotte.RoleEnum;
 import com.grey.cagnotte.entity.Permission;
 import com.grey.cagnotte.entity.Role;
 import com.grey.cagnotte.entity.User;
@@ -67,9 +68,9 @@ public class DatabaseSeeder {
         String sql = "SELECT c.name FROM `roles` c";
         List<Role> rs = jdbcTemplate.query(sql, (resultSet, rowNum) -> null);
         if (rs == null || rs.size() <= 0) {
-            RoleRequest ar1 = RoleRequest.builder().name("ADMIN").build();
-            RoleRequest ar2 = RoleRequest.builder().name("SUPERADMIN").build();
-            RoleRequest ar3 = RoleRequest.builder().name("USER").build();
+            RoleRequest ar1 = RoleRequest.builder().name(RoleEnum.ADMIN.name()).build();
+            RoleRequest ar2 = RoleRequest.builder().name(RoleEnum.SUPER_ADMIN.name()).build();
+            RoleRequest ar3 = RoleRequest.builder().name(RoleEnum.USER.name()).build();
 
             roleService.addRole(Arrays.asList(ar1, ar2, ar3));
 
@@ -90,7 +91,8 @@ public class DatabaseSeeder {
                     .email("gadmin@cagnotte.com")
                     .tel1("98574896")
                     .password("azerty@123")
-                    .roles(Collections.singletonList(RoleRequest.builder().name("SUPERADMIN").build()))
+                    .is_active(true)
+                    .roles(Collections.singletonList(RoleRequest.builder().name(RoleEnum.SUPER_ADMIN.name()).build()))
                     .build();
 
             userService.addUser(ar1);
