@@ -30,7 +30,10 @@ public class CagnotteResponse {
     private String personalizedMessage;
     private String image;
     private String eventLocation;
+    private boolean isPublic;
     private String url;
+    private String accessToken;
+    private LocalDateTime accessTokenExpiresAt;
     private UserResponse user;
     private CategoryResponse category;
     private State state;

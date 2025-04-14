@@ -42,7 +42,15 @@ public class Cagnotte {
     private String image;
     @Column(name = "event_location")
     private String eventLocation;
+
+    @Column(name = "is_public")
+    private boolean isPublic;
+
     private String url;
+    @Column(name = "access_token")
+    private String accessToken;
+    @Column(name = "access_token_expires_at")
+    private LocalDateTime accessTokenExpiresAt;
 
     @CreationTimestamp
     private LocalDateTime created_at;

@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "spring.application.accessTokenValidityMinutes",
+      "type": "java.lang.Integer",
+      "description": "Description for spring.application.accessTokenValidityMinutes."
+    }
+  ]
+}

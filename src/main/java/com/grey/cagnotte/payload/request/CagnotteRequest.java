@@ -21,7 +21,10 @@ public class CagnotteRequest {
     private String personalizedMessage;
     private String image;
     private String eventLocation;
+    private boolean isPublic;
     private String url;
+    private String accessToken;
+    private LocalDateTime accessTokenExpiresAt;
     private String state_slug;
     private long category_id;
 }

@@ -9,11 +9,19 @@ import java.util.List;
 
 public interface CagnotteService {
 
-    List<Cagnotte> getAllCagnottes () ;
+    List<CagnotteResponse> getAllCagnottes();
+
+    List<CagnotteResponse> getPublicCagnottes() ;
+
+    List<CagnotteResponse> getAllMyCagnottes();
 
     public long addCagnotte(CagnotteRequest cagnotteRequest) ;
 
     public CagnotteResponse getCagnotteById(long cagnotteId) ;
+
+    public CagnotteResponse getCagnotteBySlug(String cagnotteSlug) ;
+
+    public CagnotteResponse getPrivateCagnotte(String slug, String accessToken);
 
     public void editCagnotte(CagnotteRequest cagnotteRequest , long cagnotteId) ;
 
