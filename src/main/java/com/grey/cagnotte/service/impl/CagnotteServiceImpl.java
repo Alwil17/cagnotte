@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.grey.cagnotte.entity.Cagnotte;
 import com.grey.cagnotte.entity.User;
 import com.grey.cagnotte.enums.StateEnum;
+import com.grey.cagnotte.events.CagnotteDraftCreatedEvent;
 import com.grey.cagnotte.exception.CagnotteCustomException;
 import com.grey.cagnotte.payload.request.CagnotteRequest;
 import com.grey.cagnotte.payload.response.CagnotteResponse;
@@ -21,6 +22,7 @@ import com.grey.cagnotte.utils.Str;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +43,7 @@ public class CagnotteServiceImpl implements CagnotteService {
     private final UserService userService;
     private final StateRepository stateRepository;
     private final CategoryRepository categoryRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Value("${app.accessTokenValidityMinutes:1440}") // Par défaut, 1440 minutes (24h)
     private long tokenValidityMinutes;
@@ -111,7 +114,7 @@ public class CagnotteServiceImpl implements CagnotteService {
             cagnotte.setImage(cagnotteRequest.getImage());
         }
         else {
-            String uri = getClass().getResourceAsStream("/images/cagnotte-default.jpg").toString();
+            String uri = getClass().getResource("/images/cagnotte-default.jpg").toString();
             log.info(uri);
             cagnotte.setImage(uri);
         }
@@ -135,6 +138,11 @@ public class CagnotteServiceImpl implements CagnotteService {
         cagnotte.setUrl(url);
 
         cagnotte = cagnotteRepository.save(cagnotte);
+
+        // Publish event if the state is DRAFT
+        if("DRAFT".equalsIgnoreCase(cagnotte.getState().getLabel())) {
+            eventPublisher.publishEvent(new CagnotteDraftCreatedEvent(this, cagnotte));
+        }
 
         log.info("CagnotteServiceImpl | addCagnotte | Cagnotte Created | Id : " + cagnotte.getId());
         return mapToResponse(cagnotte);
