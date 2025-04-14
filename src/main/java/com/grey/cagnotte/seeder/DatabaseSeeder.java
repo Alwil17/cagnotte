@@ -1,14 +1,13 @@
 package com.grey.cagnotte.seeder;
 
+import com.grey.cagnotte.enums.RoleEnum;
 import com.grey.cagnotte.entity.Permission;
 import com.grey.cagnotte.entity.Role;
+import com.grey.cagnotte.entity.State;
 import com.grey.cagnotte.entity.User;
-import com.grey.cagnotte.payload.request.PermissionRequest;
-import com.grey.cagnotte.payload.request.RoleRequest;
-import com.grey.cagnotte.payload.request.UserRequest;
-import com.grey.cagnotte.service.PermissionService;
-import com.grey.cagnotte.service.RoleService;
-import com.grey.cagnotte.service.UserService;
+import com.grey.cagnotte.enums.StateEnum;
+import com.grey.cagnotte.payload.request.*;
+import com.grey.cagnotte.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,12 +30,16 @@ public class DatabaseSeeder {
     private final UserService userService;
     private final RoleService roleService;
     private final PermissionService permissionService;
+    private final StateService stateService;
+    private final CategoryService categoryService;
 
     @EventListener
     public void seed(ContextRefreshedEvent event) {
         seedPermissionsTable();
         seedRoleTable();
         seedUserTable();
+        seedStateTable();
+        seedCategoryTable();
     }
 
     private void seedPermissionsTable() {
@@ -67,9 +69,9 @@ public class DatabaseSeeder {
         String sql = "SELECT c.name FROM `roles` c";
         List<Role> rs = jdbcTemplate.query(sql, (resultSet, rowNum) -> null);
         if (rs == null || rs.size() <= 0) {
-            RoleRequest ar1 = RoleRequest.builder().name("ADMIN").build();
-            RoleRequest ar2 = RoleRequest.builder().name("SUPERADMIN").build();
-            RoleRequest ar3 = RoleRequest.builder().name("USER").build();
+            RoleRequest ar1 = RoleRequest.builder().name(RoleEnum.ADMIN.name()).build();
+            RoleRequest ar2 = RoleRequest.builder().name(RoleEnum.SUPER_ADMIN.name()).build();
+            RoleRequest ar3 = RoleRequest.builder().name(RoleEnum.USER.name()).build();
 
             roleService.addRole(Arrays.asList(ar1, ar2, ar3));
 
@@ -90,7 +92,8 @@ public class DatabaseSeeder {
                     .email("gadmin@cagnotte.com")
                     .tel1("98574896")
                     .password("azerty@123")
-                    .roles(Collections.singletonList(RoleRequest.builder().name("SUPERADMIN").build()))
+                    .is_active(true)
+                    .roles(Collections.singletonList(RoleRequest.builder().name(RoleEnum.SUPER_ADMIN.name()).build()))
                     .build();
 
             userService.addUser(ar1);
@@ -98,6 +101,83 @@ public class DatabaseSeeder {
             log.info("users table seeded");
         } else {
             log.info("User Seeding Not Required");
+        }
+    }
+
+    private void seedStateTable() {
+        String sql = "SELECT COUNT(*) FROM `state`";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
+        if (count == null || count <= 0) {
+            List<StateRequest> states = List.of(
+                    StateRequest.builder()
+                            .label(StateEnum.DRAFT.name())
+                            .description("Cagnotte not yet published")
+                            .color("#FFC107") // Yellow
+                            .build(),
+                    StateRequest.builder()
+                            .label(StateEnum.ACTIVE.name())
+                            .description("Cagnotte accepting contributions")
+                            .color("#28A745") // Green
+                            .build(),
+                    StateRequest.builder()
+                            .label(StateEnum.CLOSED.name())
+                            .description("Cagnotte manually closed")
+                            .color("#DC3545") // Red
+                            .build(),
+                    StateRequest.builder()
+                            .label(StateEnum.EXPIRED.name())
+                            .description("Cagnotte has reached its deadline")
+                            .color("#6C757D") // Gray
+                            .build(),
+                    StateRequest.builder()
+                            .label(StateEnum.ARCHIVED.name())
+                            .description("Cagnotte archived for record")
+                            .color("#007BFF") // Blue
+                            .build(),
+                    StateRequest.builder()
+                            .label(StateEnum.CANCELED.name())
+                            .description("Cagnotte was canceled")
+                            .color("#FD7E14") // Orange
+                            .build(),
+                    StateRequest.builder()
+                            .label(StateEnum.UNDER_REVIEW.name())
+                            .description("Pending verification or review")
+                            .color("#6F42C1") // Purple
+                            .build()
+            );
+
+            states.forEach(stateService::addState);
+
+            log.info("State table seeded");
+        } else {
+            log.info("State Seeding Not Required");
+        }
+    }
+
+    private void seedCategoryTable() {
+        String sql = "SELECT COUNT(*) FROM category";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
+
+        if (count == null || count <= 0) {
+            List<CategoryRequest> categories = List.of(
+                    new CategoryRequest("FAMILY", "Family-related occasions", "👨‍👩‍👧‍👦"),
+                    new CategoryRequest("WEDDING", "Marriage and engagement support", "💍"),
+                    new CategoryRequest("BIRTHDAY", "Birthday gifts and surprises", "🎂"),
+                    new CategoryRequest("EDUCATION", "School and tuition support", "🎓"),
+                    new CategoryRequest("HEALTH", "Medical and emergency funds", "🏥"),
+                    new CategoryRequest("FUNERAL", "Funeral and memorial support", "⚰️"),
+                    new CategoryRequest("PROJECT", "Creative or business projects", "💡"),
+                    new CategoryRequest("SPORT", "Athletic or team fundraising", "⚽"),
+                    new CategoryRequest("TRAVEL", "Trips or honeymoon support", "✈️"),
+                    new CategoryRequest("CHARITY", "Charitable donations and causes", "❤️"),
+                    new CategoryRequest("OTHER", "Miscellaneous or custom cagnottes", "🔖")
+            );
+
+            categories.forEach(categoryService::addCategory);
+
+            log.info("Categories table seeded successfully");
+        } else {
+            log.info("Categories already exist, skipping seeding.");
         }
     }
 

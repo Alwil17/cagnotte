@@ -8,9 +8,9 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface EtatRepository extends JpaRepository<State, Long> {
-    public Optional<State> findByLabel(String label);
-
+public interface StateRepository extends JpaRepository<State, Long> {
     @Query(value = "SELECT case when count(e)>0 then true else false end FROM State e where e.label = :label")
-    public Boolean existByLabel(String label);
+    Boolean existByLabel(String label);
+
+    Optional<State> findByLabel(String label);
 }

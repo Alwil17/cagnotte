@@ -24,9 +24,9 @@ public class Cagnotte {
 
     private String label;
     private String slug;
-    private String reference;
-    private String organizer;
     private String concerns;
+    @Column(name = "description", columnDefinition = "LONGTEXT")
+    private String description;
     @Column(name = "date_creation")
     private LocalDateTime dateCreation;
     @Column(name = "date_due")
@@ -37,12 +37,18 @@ public class Cagnotte {
     private double collectedAmount = 0;
     @Column(name = "participation_amount")
     private double participationAmount;
-    @Column(name = "personalized_message")
-    private String personalizedMessage;
     private String image;
     @Column(name = "event_location")
     private String eventLocation;
+
+    @Column(name = "is_public")
+    private boolean isPublic;
+
     private String url;
+    @Column(name = "access_token")
+    private String accessToken;
+    @Column(name = "access_token_expires_at")
+    private LocalDateTime accessTokenExpiresAt;
 
     @CreationTimestamp
     private LocalDateTime created_at;
@@ -61,10 +67,6 @@ public class Cagnotte {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
-
-    @ManyToOne
-    @JoinColumn(name = "type_id", nullable = false)
-    private ParticipationType type;
 
     @OneToMany(mappedBy = "cagnotte")
     private List<Participation> participations;

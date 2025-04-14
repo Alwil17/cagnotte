@@ -34,3 +34,4 @@ spring:
           secret-key: kfnazezfdajiefjpoehiuhiuhhkjfdslgpreuiehfshrs
   application:
     name: Cagnotte
+    accessTokenValidityMinutes: 1440

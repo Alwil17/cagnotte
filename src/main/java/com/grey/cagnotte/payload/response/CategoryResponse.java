@@ -10,13 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryResponse {
-    private long id ;
-    private String libelle ;
-    private String slug ;
-    private String icone ;
-    private boolean allow_concerne ;
-    private boolean allow_message ;
-    private boolean allow_media ;
-    private boolean allow_lieu ;
-    private boolean allow_url ;
+    private long id;
+    private String label;
+    private String slug;
+    private String icon;
+    private String description;
 }
