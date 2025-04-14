@@ -68,10 +68,6 @@ public class Cagnotte {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToOne
-    @JoinColumn(name = "type_id", nullable = false)
-    private ParticipationType type;
-
     @OneToMany(mappedBy = "cagnotte")
     private List<Participation> participations;
 
