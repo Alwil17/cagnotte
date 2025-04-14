@@ -27,6 +27,8 @@ public class Cagnotte {
     private String reference;
     private String organizer;
     private String concerns;
+    @Column(name = "description", columnDefinition = "LONGTEXT")
+    private String description;
     @Column(name = "date_creation")
     private LocalDateTime dateCreation;
     @Column(name = "date_due")
@@ -37,8 +39,6 @@ public class Cagnotte {
     private double collectedAmount = 0;
     @Column(name = "participation_amount")
     private double participationAmount;
-    @Column(name = "personalized_message")
-    private String personalizedMessage;
     private String image;
     @Column(name = "event_location")
     private String eventLocation;

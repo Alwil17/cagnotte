@@ -22,12 +22,12 @@ public class CagnotteResponse {
     private String reference;
     private String organizer;
     private String concerns;
+    private String description;
     private LocalDateTime dateCreation;
     private LocalDateTime dateDue;
     private double goalAmount;
     private double collectedAmount;
     private double participationAmount;
-    private String personalizedMessage;
     private String image;
     private String eventLocation;
     private boolean isPublic;

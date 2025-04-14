@@ -15,7 +15,7 @@ public interface CagnotteService {
 
     List<CagnotteResponse> getAllMyCagnottes();
 
-    public long addCagnotte(CagnotteRequest cagnotteRequest) ;
+    public CagnotteResponse addCagnotte(CagnotteRequest cagnotteRequest) ;
 
     public CagnotteResponse getCagnotteById(long cagnotteId) ;
 
@@ -23,7 +23,7 @@ public interface CagnotteService {
 
     public CagnotteResponse getPrivateCagnotte(String slug, String accessToken);
 
-    public void editCagnotte(CagnotteRequest cagnotteRequest , long cagnotteId) ;
+    public CagnotteResponse editCagnotte(CagnotteRequest cagnotteRequest , long cagnotteId) ;
 
     public void deleteCagnotteById(long cagnotteId) ;
 

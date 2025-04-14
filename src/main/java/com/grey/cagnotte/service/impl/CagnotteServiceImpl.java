@@ -78,7 +78,7 @@ public class CagnotteServiceImpl implements CagnotteService {
     }
 
     @Override
-    public long addCagnotte(CagnotteRequest cagnotteRequest) {
+    public CagnotteResponse addCagnotte(CagnotteRequest cagnotteRequest) {
         log.info("CagnotteServiceImpl | addCagnotte is called");
 
         User user = userService.getMe();
@@ -92,7 +92,7 @@ public class CagnotteServiceImpl implements CagnotteService {
                 .dateDue(cagnotteRequest.getDateDue())
                 .goalAmount(cagnotteRequest.getGoalAmount())
                 .collectedAmount(cagnotteRequest.getCollectedAmount())
-                .personalizedMessage(cagnotteRequest.getPersonalizedMessage())
+                .description(cagnotteRequest.getDescription())
                 .image(cagnotteRequest.getImage())
                 .eventLocation(cagnotteRequest.getEventLocation())
                 .isPublic(cagnotteRequest.isPublic())
@@ -120,7 +120,7 @@ public class CagnotteServiceImpl implements CagnotteService {
         cagnotte = cagnotteRepository.save(cagnotte);
 
         log.info("CagnotteServiceImpl | addCagnotte | Cagnotte Created | Id : " + cagnotte.getId());
-        return cagnotte.getId();
+        return mapToResponse(cagnotte);
     }
 
     /**
@@ -161,7 +161,7 @@ public class CagnotteServiceImpl implements CagnotteService {
     }
 
     @Override
-    public void editCagnotte(CagnotteRequest cagnotteRequest, long cagnotteId) {
+    public CagnotteResponse editCagnotte(CagnotteRequest cagnotteRequest, long cagnotteId) {
         log.info("CagnotteServiceImpl | editCagnotte is called");
 
         User user = userService.getMe();
@@ -181,7 +181,7 @@ public class CagnotteServiceImpl implements CagnotteService {
         cagnotte.setDateDue(cagnotteRequest.getDateDue());
         cagnotte.setGoalAmount(cagnotteRequest.getGoalAmount());
         cagnotte.setCollectedAmount(cagnotteRequest.getCollectedAmount());
-        cagnotte.setPersonalizedMessage(cagnotteRequest.getPersonalizedMessage());
+        cagnotte.setDescription(cagnotteRequest.getDescription());
         cagnotte.setImage(cagnotteRequest.getImage());
         cagnotte.setEventLocation(cagnotteRequest.getEventLocation());
         cagnotte.setUrl(cagnotteRequest.getUrl());
@@ -192,6 +192,7 @@ public class CagnotteServiceImpl implements CagnotteService {
         cagnotteRepository.save(cagnotte);
 
         log.info("CagnotteServiceImpl | editCagnotte | Cagnotte Updated | Cagnotte Id :" + cagnotte.getId());
+        return mapToResponse(cagnotte);
     }
 
     @Override

@@ -60,14 +60,15 @@ public class CagnotteController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> addCagnotte(@RequestBody CagnotteRequest cagnotteRequest) {
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<CagnotteResponse> addCagnotte(@RequestBody CagnotteRequest cagnotteRequest) {
 
         log.info("CagnotteController | addCagnotte is called");
 
         log.info("CagnotteController | addCagnotte | cagnotteRequest : " + cagnotteRequest.toString());
 
-        long cagnotteId = cagnotteService.addCagnotte(cagnotteRequest);
-        return new ResponseEntity<>(cagnotteId, HttpStatus.CREATED);
+        CagnotteResponse cagnotte = cagnotteService.addCagnotte(cagnotteRequest);
+        return new ResponseEntity<>(cagnotte, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
