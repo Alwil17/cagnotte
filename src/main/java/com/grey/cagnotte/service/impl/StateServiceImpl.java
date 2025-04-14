@@ -4,7 +4,7 @@ import com.grey.cagnotte.entity.State;
 import com.grey.cagnotte.exception.CagnotteCustomException;
 import com.grey.cagnotte.payload.request.StateRequest;
 import com.grey.cagnotte.payload.response.StateResponse;
-import com.grey.cagnotte.repository.EtatRepository;
+import com.grey.cagnotte.repository.StateRepository;
 import com.grey.cagnotte.service.StateService;
 import com.grey.cagnotte.utils.Str;
 import lombok.RequiredArgsConstructor;
@@ -19,84 +19,85 @@ import static org.springframework.beans.BeanUtils.copyProperties;
 @RequiredArgsConstructor
 @Log4j2
 public class StateServiceImpl implements StateService {
-    private final String NOT_FOUND= "ETAT_NOT_FOUND";
+    private final String NOT_FOUND= "STATE_NOT_FOUND";
     private final String name= "StateServiceImpl | ";
-    private final EtatRepository etatRepository;
+    private final StateRepository stateRepository;
 
     @Override
-    public List<State> getAllStates(){return etatRepository.findAll();}
+    public List<State> getAllStates(){return stateRepository.findAll();}
 
     @Override
-    public long addState(StateRequest stateRequest) {
-        log.info(name+"addEtat is called");
+    public State addState(StateRequest stateRequest) {
+        log.info(name+"addState is called");
         State state;
-        if(!etatRepository.existByLabel(stateRequest.getLabel())) {
+        if(!stateRepository.existByLabel(stateRequest.getLabel())) {
             state = State.builder()
                     .label(stateRequest.getLabel())
                     .slug(Str.slug(stateRequest.getLabel()))
+                    .description(stateRequest.getDescription())
+                    .color(stateRequest.getColor())
                     .build();
-            etatRepository.save(state);
+            stateRepository.save(state);
         }else {
-            state = etatRepository.findByLabel(stateRequest.getLabel()).orElseThrow();
+            state = stateRepository.findByLabel(stateRequest.getLabel()).orElseThrow();
             editState(stateRequest, state.getId());
         }
-        log.info(name+"addEtat | Etat Created | Id : " + state.getId());
-
-        return state.getId();
+        log.info(name+"addState | State Created | Id : " + state.getId());
+        return state;
     }
 
     @Override
     public void addState(List<StateRequest> stateRequests) {
-        log.info(name+"addEtats is called");
-        stateRequests.forEach(stateRequest ->{
-            State state;
-            if(!etatRepository.existByLabel(stateRequest.getLabel())) {
-                state = State.builder()
-                        .label(stateRequest.getLabel())
-                        .slug(Str.slug(stateRequest.getLabel()))
-                        .build();
-                etatRepository.save(state);
-            }
-        });
-        log.info(name+"addEtats | Etats Created");
+        log.info(name+"addStates is called");
+        stateRequests.forEach(this::addState);
+        log.info(name+"addStates | States Created");
     }
 
     @Override
     public StateResponse getStateById(long stateId) {
-        log.info(name+"getEtatById is called");
+        log.info(name+"getStateById is called");
 
         State state
-                = etatRepository.findById(stateId)
+                = stateRepository.findById(stateId)
                 .orElseThrow(
-                        () -> new CagnotteCustomException("Etat with given id not found", NOT_FOUND));
+                        () -> new CagnotteCustomException("State with given id not found", NOT_FOUND));
 
         StateResponse stateResponse = new StateResponse();
 
         copyProperties(state, stateResponse);
 
-        log.info(name+"getEtatById | stateResponse :" + stateResponse.toString());
+        log.info(name+"getStateById | stateResponse :" + stateResponse.toString());
 
         return stateResponse;
     }
 
     @Override
+    public State getStateBySlug(String slug) {
+        return stateRepository.findByLabel(slug)
+                .orElseThrow(
+                        () -> new CagnotteCustomException("State with given id not found", NOT_FOUND));
+    }
+
+    @Override
     public void editState(StateRequest stateRequest, long stateId) {
-        log.info(name+"editEtat is called");
-        State state = etatRepository.findById(stateId)
-                .orElseThrow(()-> new CagnotteCustomException("Etat with given id not found", NOT_FOUND));
-        state.setSlug(Str.slug(stateRequest.getLabel()));
+        log.info(name+"editState is called");
+        State state = stateRepository.findById(stateId)
+                .orElseThrow(()-> new CagnotteCustomException("State with given id not found", NOT_FOUND));
         state.setLabel(stateRequest.getLabel());
-        etatRepository.save(state);
-        log.info(name+"editEtat | Etat Updated | Etat Id: "+ state.getId());
+        state.setSlug(Str.slug(stateRequest.getLabel()));
+        state.setDescription(stateRequest.getDescription());
+        state.setColor(stateRequest.getColor());
+        stateRepository.save(state);
+        log.info(name+"editState | State Updated | State Id: "+ state.getId());
     }
 
     @Override
     public void deleteStateById(long stateId) {
-        log.info("Etat id: {}", stateId);
-        if(!etatRepository.existsById(stateId)) {
-            throw new CagnotteCustomException("Etat with given Id: " + stateId + " not found", NOT_FOUND);
+        log.info("State id: {}", stateId);
+        if(!stateRepository.existsById(stateId)) {
+            throw new CagnotteCustomException("State with given Id: " + stateId + " not found", NOT_FOUND);
         }
-        log.info("Deleting Etat with id: {}", stateId);
-        etatRepository.deleteById(stateId);
+        log.info("Deleting State with id: {}", stateId);
+        stateRepository.deleteById(stateId);
     }
 }

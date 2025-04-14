@@ -10,7 +10,6 @@ public class SecurityConstants {
             "/v3/api-docs.yaml",
             "/categories",
             "/etats",
-            "/cagnottes",
             "/error*",
     };
 }

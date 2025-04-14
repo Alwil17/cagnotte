@@ -5,13 +5,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.grey.cagnotte.entity.Cagnotte;
 import com.grey.cagnotte.entity.User;
+import com.grey.cagnotte.enums.StateEnum;
 import com.grey.cagnotte.exception.CagnotteCustomException;
 import com.grey.cagnotte.payload.request.CagnotteRequest;
 import com.grey.cagnotte.payload.response.CagnotteResponse;
 import com.grey.cagnotte.payload.response.UserResponse;
 import com.grey.cagnotte.repository.CagnotteRepository;
+import com.grey.cagnotte.repository.CategoryRepository;
+import com.grey.cagnotte.repository.StateRepository;
 import com.grey.cagnotte.repository.UserRepository;
 import com.grey.cagnotte.service.CagnotteService;
+import com.grey.cagnotte.service.StateService;
 import com.grey.cagnotte.service.UserService;
 import com.grey.cagnotte.utils.Str;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +39,8 @@ public class CagnotteServiceImpl implements CagnotteService {
 
     private final CagnotteRepository cagnotteRepository;
     private final UserService userService;
+    private final StateRepository stateRepository;
+    private final CategoryRepository categoryRepository;
 
     @Value("${app.accessTokenValidityMinutes:1440}") // Par défaut, 1440 minutes (24h)
     private long tokenValidityMinutes;
@@ -85,37 +91,48 @@ public class CagnotteServiceImpl implements CagnotteService {
 
         Cagnotte cagnotte = Cagnotte.builder()
                 .label(cagnotteRequest.getLabel())
-                .reference(cagnotteRequest.getReference())
-                .organizer(cagnotteRequest.getOrganizer())
                 .concerns(cagnotteRequest.getConcerns())
                 .dateCreation(LocalDateTime.now())
-                .dateDue(cagnotteRequest.getDateDue())
-                .goalAmount(cagnotteRequest.getGoalAmount())
-                .collectedAmount(cagnotteRequest.getCollectedAmount())
                 .description(cagnotteRequest.getDescription())
-                .image(cagnotteRequest.getImage())
                 .eventLocation(cagnotteRequest.getEventLocation())
                 .isPublic(cagnotteRequest.isPublic())
-                .url(cagnotteRequest.getUrl())
-                .accessToken(cagnotteRequest.getAccessToken())
-                .accessTokenExpiresAt(cagnotteRequest.getAccessTokenExpiresAt())
+                .category(categoryRepository.findBySlug(cagnotteRequest.getCategory_slug()).orElseThrow())
                 .build();
         // S'il n'y a pas d'utilisateur avec cet email,
         // il ne fera donc rien
         if(user != null) cagnotte.setUser(user);
 
-        String slug = Str.slug(cagnotteRequest.getLabel());
-        cagnotte.setSlug(slug);
-        cagnotte.setUrl("/" + slug);
+        if(cagnotteRequest.getDateDue() != null) cagnotte.setDateDue(cagnotteRequest.getDateDue());
+        if(cagnotteRequest.getGoalAmount() != 0) cagnotte.setGoalAmount(cagnotteRequest.getGoalAmount());
+        if(cagnotteRequest.getCollectedAmount() != 0) cagnotte.setCollectedAmount(cagnotteRequest.getCollectedAmount());
+        if(cagnotteRequest.getParticipationAmount() != 0) cagnotte.setParticipationAmount(cagnotteRequest.getParticipationAmount());
+
+        if(cagnotteRequest.getImage() != null && !cagnotteRequest.getImage().isBlank()){
+            cagnotte.setImage(cagnotteRequest.getImage());
+        }
+        else {
+            String uri = getClass().getResourceAsStream("/images/cagnotte-default.jpg").toString();
+            log.info(uri);
+            cagnotte.setImage(uri);
+        }
 
         // Si la cagnotte est privée et que l'on souhaite autoriser l'accès via un lien sécurisé,
         // on génère un access token.
         if (!cagnotte.isPublic()) {
             String accessToken = UUID.randomUUID().toString(); // ou une autre méthode de génération sécurisée
             cagnotte.setAccessToken(accessToken);
-            // Optionnel: définir une date d'expiration
+            // Optional: Défine expiration date
             cagnotte.setAccessTokenExpiresAt(LocalDateTime.now().plusMinutes(tokenValidityMinutes));
         }
+
+        cagnotte.setState(stateRepository.findByLabel(StateEnum.DRAFT.name()).orElseThrow());
+
+        cagnotte = cagnotteRepository.save(cagnotte);
+
+        String slug = Str.slug(cagnotte.getLabel());
+        String url = String.format("/%s-%08d", slug, cagnotte.getId());
+        cagnotte.setSlug(slug);
+        cagnotte.setUrl(url);
 
         cagnotte = cagnotteRepository.save(cagnotte);
 
@@ -175,8 +192,6 @@ public class CagnotteServiceImpl implements CagnotteService {
 
         cagnotte.setLabel(cagnotteRequest.getLabel());
         cagnotte.setSlug(Str.slug(cagnotteRequest.getLabel()));
-        cagnotte.setReference(cagnotteRequest.getReference());
-        cagnotte.setOrganizer(cagnotteRequest.getOrganizer());
         cagnotte.setConcerns(cagnotteRequest.getConcerns());
         cagnotte.setDateDue(cagnotteRequest.getDateDue());
         cagnotte.setGoalAmount(cagnotteRequest.getGoalAmount());
@@ -184,8 +199,6 @@ public class CagnotteServiceImpl implements CagnotteService {
         cagnotte.setDescription(cagnotteRequest.getDescription());
         cagnotte.setImage(cagnotteRequest.getImage());
         cagnotte.setEventLocation(cagnotteRequest.getEventLocation());
-        cagnotte.setUrl(cagnotteRequest.getUrl());
-        cagnotte.setUpdated_at(LocalDateTime.now());
         // S'il n'y a pas d'utilisateur avec cet email,
         // il ne fera donc rien
         if(user != null) cagnotte.setUser(user);

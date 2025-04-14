@@ -14,9 +14,5 @@ public class CategoryResponse {
     private String libelle ;
     private String slug ;
     private String icone ;
-    private boolean allow_concerne ;
-    private boolean allow_message ;
-    private boolean allow_media ;
-    private boolean allow_lieu ;
-    private boolean allow_url ;
+    private String description;
 }

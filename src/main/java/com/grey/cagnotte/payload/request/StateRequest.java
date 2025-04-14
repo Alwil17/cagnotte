@@ -8,4 +8,6 @@ import lombok.Data;
 @Builder
 public class StateRequest {
     public String label;
+    private String description;
+    public String color;
 }

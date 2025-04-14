@@ -19,8 +19,6 @@ public class CagnotteResponse {
     private long id;
     private String label;
     private String slug;
-    private String reference;
-    private String organizer;
     private String concerns;
     private String description;
     private LocalDateTime dateCreation;

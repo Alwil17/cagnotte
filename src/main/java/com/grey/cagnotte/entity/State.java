@@ -22,6 +22,8 @@ public class State {
     @Max(value = 100)
     private String label;
     private String slug;
+    private String description;
+    private String color;
 
 
     @OneToMany(mappedBy = "state")

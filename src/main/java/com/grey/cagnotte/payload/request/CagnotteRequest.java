@@ -1,6 +1,7 @@
 package com.grey.cagnotte.payload.request;
 
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,8 +12,6 @@ import java.time.LocalDateTime;
 @Builder
 public class CagnotteRequest {
     private String label;
-    private String reference;
-    private String organizer;
     private String concerns;
     private String description;
     private LocalDateTime dateDue;
@@ -22,9 +21,6 @@ public class CagnotteRequest {
     private String image;
     private String eventLocation;
     private boolean isPublic;
-    private String url;
-    private String accessToken;
-    private LocalDateTime accessTokenExpiresAt;
-    private String state_slug;
-    private long category_id;
+    @NotBlank
+    private String category_slug;
 }

@@ -62,9 +62,7 @@ public class CagnotteController {
     @PostMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CagnotteResponse> addCagnotte(@RequestBody CagnotteRequest cagnotteRequest) {
-
         log.info("CagnotteController | addCagnotte is called");
-
         log.info("CagnotteController | addCagnotte | cagnotteRequest : " + cagnotteRequest.toString());
 
         CagnotteResponse cagnotte = cagnotteService.addCagnotte(cagnotteRequest);

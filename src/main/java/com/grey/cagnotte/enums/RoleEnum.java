@@ -1,4 +1,4 @@
-package com.grey.cagnotte;
+package com.grey.cagnotte.enums;
 
 public enum RoleEnum {
     USER,

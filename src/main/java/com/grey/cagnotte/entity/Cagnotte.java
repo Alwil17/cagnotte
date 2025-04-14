@@ -24,8 +24,6 @@ public class Cagnotte {
 
     private String label;
     private String slug;
-    private String reference;
-    private String organizer;
     private String concerns;
     @Column(name = "description", columnDefinition = "LONGTEXT")
     private String description;

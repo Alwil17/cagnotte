@@ -13,4 +13,6 @@ public class StateResponse {
     public long id;
     public String libelle;
     public String slug;
+    private String description;
+    public String color;
 }
