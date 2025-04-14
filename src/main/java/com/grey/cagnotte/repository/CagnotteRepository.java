@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface CagnotteRepository extends JpaRepository<Cagnotte,Long> {
 
-    Optional<Cagnotte> findBySlug(String slug);
+    Optional<Cagnotte> findByUrl(String url);
 
     @Query("select c from Cagnotte c where c.isPublic = true")
     List<Cagnotte> findAllByPublicTrue();

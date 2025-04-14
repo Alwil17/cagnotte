@@ -10,13 +10,10 @@ import com.grey.cagnotte.events.CagnotteDraftCreatedEvent;
 import com.grey.cagnotte.exception.CagnotteCustomException;
 import com.grey.cagnotte.payload.request.CagnotteRequest;
 import com.grey.cagnotte.payload.response.CagnotteResponse;
-import com.grey.cagnotte.payload.response.UserResponse;
 import com.grey.cagnotte.repository.CagnotteRepository;
 import com.grey.cagnotte.repository.CategoryRepository;
 import com.grey.cagnotte.repository.StateRepository;
-import com.grey.cagnotte.repository.UserRepository;
 import com.grey.cagnotte.service.CagnotteService;
-import com.grey.cagnotte.service.StateService;
 import com.grey.cagnotte.service.UserService;
 import com.grey.cagnotte.utils.Str;
 import lombok.RequiredArgsConstructor;
@@ -56,7 +53,7 @@ public class CagnotteServiceImpl implements CagnotteService {
 
     @Override
     public List<CagnotteResponse> getPublicCagnottes() {
-        List<Cagnotte> cagnottes = cagnotteRepository.findAll();
+        List<Cagnotte> cagnottes = cagnotteRepository.findAllByPublicTrue();
         return cagnottes.stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
@@ -78,12 +75,16 @@ public class CagnotteServiceImpl implements CagnotteService {
     }
 
     @Override
-    public CagnotteResponse getCagnotteBySlug(String cagnotteSlug) {
+    public CagnotteResponse getCagnotteByUrl(String cagnotteUrl, boolean isPublic) {
         Cagnotte cagnotte
-                = cagnotteRepository.findBySlug(cagnotteSlug)
+                = cagnotteRepository.findByUrl(cagnotteUrl)
                 .orElseThrow(
-                        () -> new CagnotteCustomException("Cagnotte with given id not found", NOT_FOUND));
-        return mapToResponse(cagnotte);
+                        () -> new CagnotteCustomException("Cagnotte with given URL not found", NOT_FOUND));
+        if(cagnotte.isPublic() == isPublic){
+            return mapToResponse(cagnotte);
+
+        }
+        throw new CagnotteCustomException("You are trying to access public or private cagnotte through wrong url.", "WRONG_URL");
     }
 
     @Override
@@ -101,8 +102,8 @@ public class CagnotteServiceImpl implements CagnotteService {
                 .isPublic(cagnotteRequest.isPublic())
                 .category(categoryRepository.findBySlug(cagnotteRequest.getCategory_slug()).orElseThrow())
                 .build();
-        // S'il n'y a pas d'utilisateur avec cet email,
-        // il ne fera donc rien
+        // If there is no user with this email,
+        // it will do nothing
         if(user != null) cagnotte.setUser(user);
 
         if(cagnotteRequest.getDateDue() != null) cagnotte.setDateDue(cagnotteRequest.getDateDue());
@@ -115,12 +116,11 @@ public class CagnotteServiceImpl implements CagnotteService {
         }
         else {
             String uri = getClass().getResource("/images/cagnotte-default.jpg").toString();
-            log.info(uri);
             cagnotte.setImage(uri);
         }
 
-        // Si la cagnotte est privée et que l'on souhaite autoriser l'accès via un lien sécurisé,
-        // on génère un access token.
+        // If the fundraiser is private and you want to authorize access via a secure link,
+        // we generate an access token.
         if (!cagnotte.isPublic()) {
             String accessToken = UUID.randomUUID().toString(); // ou une autre méthode de génération sécurisée
             cagnotte.setAccessToken(accessToken);
@@ -133,7 +133,7 @@ public class CagnotteServiceImpl implements CagnotteService {
         cagnotte = cagnotteRepository.save(cagnotte);
 
         String slug = Str.slug(cagnotte.getLabel());
-        String url = String.format("/%s-%08d", slug, cagnotte.getId());
+        String url = String.format("%s-%08d", slug, cagnotte.getId());
         cagnotte.setSlug(slug);
         cagnotte.setUrl(url);
 
@@ -167,9 +167,9 @@ public class CagnotteServiceImpl implements CagnotteService {
     /**
      * Method for recovering a private kitty with access logic.
      */
-    public CagnotteResponse getPrivateCagnotte(String slug, String accessToken) {
+    public CagnotteResponse getPrivateCagnotte(String url, String accessToken) {
         User user = userService.getMe();
-        CagnotteResponse cagnotte = getCagnotteBySlug(slug);
+        CagnotteResponse cagnotte = getCagnotteByUrl(url, false);
 
         // If the token is present and valid, allow access
         if (accessToken != null && isValidAccessToken(cagnotte, accessToken)) {
@@ -186,15 +186,14 @@ public class CagnotteServiceImpl implements CagnotteService {
     }
 
     @Override
-    public CagnotteResponse editCagnotte(CagnotteRequest cagnotteRequest, long cagnotteId) {
+    public CagnotteResponse editCagnotte(CagnotteRequest cagnotteRequest, String cagnotteUrl) {
         log.info("CagnotteServiceImpl | editCagnotte is called");
-
         User user = userService.getMe();
 
         Cagnotte cagnotte
-                = cagnotteRepository.findById(cagnotteId)
+                = cagnotteRepository.findByUrl(cagnotteUrl)
                 .orElseThrow(() -> new CagnotteCustomException(
-                        "Cagnotte with given Id not found",
+                        "Cagnotte with given Url not found",
                         NOT_FOUND
                 ));
 
@@ -210,24 +209,47 @@ public class CagnotteServiceImpl implements CagnotteService {
         // S'il n'y a pas d'utilisateur avec cet email,
         // il ne fera donc rien
         if(user != null) cagnotte.setUser(user);
-        cagnotteRepository.save(cagnotte);
-
-        log.info("CagnotteServiceImpl | editCagnotte | Cagnotte Updated | Cagnotte Id :" + cagnotte.getId());
-        return mapToResponse(cagnotte);
+        if (user.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))
+                || (user.getId() == cagnotte.getUser().getId())) {
+            cagnotteRepository.save(cagnotte);
+            log.info("CagnotteServiceImpl | editCagnotte | Cagnotte Updated | Cagnotte Id :" + cagnotte.getId());
+            return mapToResponse(cagnotte);
+        }
+        throw new AccessDeniedException("Access denied to this cagnotte");
     }
 
     @Override
-    public void deleteCagnotteById(long cagnotteId) {
-        log.info("Cagnotte id: {}", cagnotteId);
+    public void deleteCagnotteByUrl(String cagnotteUrl) {
+        log.info("Cagnotte url: {}", cagnotteUrl);
+        User user = userService.getMe();
+        Cagnotte cagnotte
+                = cagnotteRepository.findByUrl(cagnotteUrl)
+                .orElseThrow(() -> new CagnotteCustomException(
+                        "Cagnotte with given Url not found",
+                        NOT_FOUND
+                ));
+        log.info("Deleting Cagnotte with url: {}", cagnotteUrl);
 
-        if (!cagnotteRepository.existsById(cagnotteId)) {
-            log.info("Im in this loop {}", !cagnotteRepository.existsById(cagnotteId));
-            throw new CagnotteCustomException(
-                    "Cagnotte with given with Id: " + cagnotteId + " not found:",
-                    NOT_FOUND);
+        if (user.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))
+                || (user.getId() == cagnotte.getUser().getId())) {
+            cagnotteRepository.deleteById(cagnotte.getId());
         }
-        log.info("Deleting Cagnotte with id: {}", cagnotteId);
-        cagnotteRepository.deleteById(cagnotteId);
+        throw new AccessDeniedException("Access denied to this cagnotte");
+    }
+
+    @Override
+    public CagnotteResponse publishCagnotte(String url) {
+        Cagnotte cagnotte
+                = cagnotteRepository.findByUrl(url)
+                .orElseThrow(
+                        () -> new CagnotteCustomException("Cagnotte with given URL not found", NOT_FOUND));
+        if(cagnotte.getState().getLabel().equals(StateEnum.DRAFT.name())){
+            cagnotte.setState(stateRepository.findByLabel(StateEnum.ACTIVE.name()).orElseThrow());
+            cagnotteRepository.save(cagnotte);
+        }
+        return mapToResponse(cagnotte);
     }
 
     public CagnotteResponse mapToResponse(Cagnotte cagnotte){

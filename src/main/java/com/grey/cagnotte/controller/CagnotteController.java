@@ -51,10 +51,22 @@ public class CagnotteController {
      * Access depends on its visibility:
      * - If the cagnotte is public, access is free.
      */
-    @GetMapping("/public/{slug}")
-    public ResponseEntity<CagnotteResponse> getCagnotteBySlug(@PathVariable("slug") String slug) {
+    @GetMapping("/public/{url}")
+    public ResponseEntity<CagnotteResponse> getCagnotteByUrl(@PathVariable("url") String url) {
         log.info("CagnotteController | getCagnotteBySlug is called");
-        CagnotteResponse cagnotte = cagnotteService.getCagnotteBySlug(slug);
+        CagnotteResponse cagnotte = cagnotteService.getCagnotteByUrl(url, true);
+
+        return new ResponseEntity<>(cagnotte, HttpStatus.OK);
+    }
+
+    /**
+     * Promote A DRAFT state cagnotte to ACTIVE.
+     */
+    @GetMapping("/{url}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERADMIN')")
+    public ResponseEntity<CagnotteResponse> publishCagnotte(@PathVariable("url") String url) {
+        log.info("CagnotteController | getCagnotteBySlug is called");
+        CagnotteResponse cagnotte = cagnotteService.publishCagnotte(url);
 
         return new ResponseEntity<>(cagnotte, HttpStatus.OK);
     }
@@ -69,41 +81,33 @@ public class CagnotteController {
         return new ResponseEntity<>(cagnotte, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CagnotteResponse> getCagnotteById(@PathVariable("id") long cagnotteId) {
-        log.info("CagnotteController | getCagnotteByCagnotteId is called");
-
-        CagnotteResponse cagnotte
-                = cagnotteService.getCagnotteById(cagnotteId);
-        return new ResponseEntity<>(cagnotte, HttpStatus.OK);
-    }
-
-    @PutMapping("/{id}")
+    @PutMapping("/{url}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> editCagnotte(@RequestBody CagnotteRequest cagnotteRequest,
-                                                  @PathVariable("id") long cagnotteId
+                                                  @PathVariable("url") String cagnotteUrl
     ) {
-
         log.info("CagnotteController | editCagnotte is called");
+        log.info("CagnotteController | editCagnotte | cagnotteId : " + cagnotteUrl);
 
-        log.info("CagnotteController | editCagnotte | cagnotteId : " + cagnotteId);
-
-        cagnotteService.editCagnotte(cagnotteRequest, cagnotteId);
+        cagnotteService.editCagnotte(cagnotteRequest, cagnotteUrl);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/private/{slug}")
+    @GetMapping("/private/{url}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CagnotteResponse> getPrivateCagnotte(
-            @PathVariable String slug,
-            @RequestParam(name = "access_token", required = false) String accessToken) {
+            @PathVariable String url,
+            @RequestParam("access_token") String accessToken) {
 
-        CagnotteResponse cagnotte = cagnotteService.getPrivateCagnotte(slug, accessToken);
+        CagnotteResponse cagnotte = cagnotteService.getPrivateCagnotte(url, accessToken);
 
         return new ResponseEntity<>(cagnotte, HttpStatus.OK);
     }
 
 
-    @DeleteMapping("/{id}")
-    public void deleteCagnotteById(@PathVariable("id") long cagnotteId) {
-        cagnotteService.deleteCagnotteById(cagnotteId);
+    @DeleteMapping("/{url}")
+    @PreAuthorize("isAuthenticated()")
+    public void deleteCagnotteById(@PathVariable("url") String cagnotteUrl) {
+        cagnotteService.deleteCagnotteByUrl(cagnotteUrl);
     }
 }
