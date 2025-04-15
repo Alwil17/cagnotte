@@ -33,5 +33,5 @@ spring:
         jwt:
           secret-key: kfnazezfdajiefjpoehiuhiuhhkjfdslgpreuiehfshrs
   application:
-    name: Cagnotte
+    name: CagnotteApplication
     accessTokenValidityMinutes: 1440

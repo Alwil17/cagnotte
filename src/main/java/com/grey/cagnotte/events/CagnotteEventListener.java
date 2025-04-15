@@ -19,7 +19,7 @@ public class CagnotteEventListener {
         // Assume you have a list of admin emails, or fetch users with the admin role.
         List<String> adminEmails = notificationService.getAdminEmails();
 
-        String subject = "New Draft Cagnotte Created";
+        String subject = "New Draft CagnotteApplication Created";
         String message = String.format("A new cagnotte '%s' (ID: %d) has been created and is in DRAFT state.",
                 cagnotte.getLabel(), cagnotte.getId());
 

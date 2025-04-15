@@ -9,25 +9,26 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import java.util.Collections;
-import java.util.List;
 
 @SpringBootApplication
 @EntityScan(basePackages = "com.grey.cagnotte.entity")
 @EnableJpaRepositories(basePackages = "com.grey.cagnotte.repository")
-public class Cagnotte extends SpringBootServletInitializer {
+@EnableScheduling
+public class CagnotteApplication extends SpringBootServletInitializer {
     public static void main(String[] args) {
-        SpringApplication.run(Cagnotte.class, args);
+        SpringApplication.run(CagnotteApplication.class, args);
     }
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(Cagnotte.class);
+        return application.sources(CagnotteApplication.class);
     }
 
     @Bean

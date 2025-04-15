@@ -124,7 +124,7 @@ public class CagnotteServiceImpl implements CagnotteService {
             eventPublisher.publishEvent(new CagnotteDraftCreatedEvent(this, cagnotte));
         }
 
-        log.info("CagnotteServiceImpl | addCagnotte | Cagnotte Created | Id : " + cagnotte.getId());
+        log.info("CagnotteServiceImpl | addCagnotte | CagnotteApplication Created | Id : " + cagnotte.getId());
         return mapToResponse(cagnotte);
     }
 
@@ -133,7 +133,7 @@ public class CagnotteServiceImpl implements CagnotteService {
         Cagnotte cagnotte
                 = cagnotteRepository.findById(cagnotteId)
                 .orElseThrow(
-                        () -> new CagnotteCustomException("Cagnotte with given id not found", NOT_FOUND));
+                        () -> new CagnotteCustomException("CagnotteApplication with given id not found", NOT_FOUND));
 
         return mapToResponse(cagnotte);
     }
@@ -147,7 +147,7 @@ public class CagnotteServiceImpl implements CagnotteService {
         Cagnotte cagnotte
                 = cagnotteRepository.findByUrl(cagnotteUrl)
                 .orElseThrow(
-                        () -> new CagnotteCustomException("Cagnotte with given URL not found", NOT_FOUND));
+                        () -> new CagnotteCustomException("CagnotteApplication with given URL not found", NOT_FOUND));
         // CHeck if cagnotte visibility is the same with method arg passed.
         if(cagnotte.isPublic() == isPublic){
             // In case the cagnotte is private, we will look for access token
@@ -193,7 +193,7 @@ public class CagnotteServiceImpl implements CagnotteService {
         Cagnotte cagnotte
                 = cagnotteRepository.findByUrl(cagnotteUrl)
                 .orElseThrow(() -> new CagnotteCustomException(
-                        "Cagnotte with given Url not found",
+                        "CagnotteApplication with given Url not found",
                         NOT_FOUND
                 ));
 
@@ -213,7 +213,7 @@ public class CagnotteServiceImpl implements CagnotteService {
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))
                 || (user.getId() == cagnotte.getUser().getId())) {
             cagnotteRepository.save(cagnotte);
-            log.info("CagnotteServiceImpl | editCagnotte | Cagnotte Updated | Cagnotte Id :" + cagnotte.getId());
+            log.info("CagnotteServiceImpl | editCagnotte | CagnotteApplication Updated | CagnotteApplication Id :" + cagnotte.getId());
             return mapToResponse(cagnotte);
         }
         throw new AccessDeniedException("Access denied to this cagnotte");
@@ -221,15 +221,15 @@ public class CagnotteServiceImpl implements CagnotteService {
 
     @Override
     public void deleteCagnotteByUrl(String cagnotteUrl) {
-        log.info("Cagnotte url: {}", cagnotteUrl);
+        log.info("CagnotteApplication url: {}", cagnotteUrl);
         User user = userService.getMe();
         Cagnotte cagnotte
                 = cagnotteRepository.findByUrl(cagnotteUrl)
                 .orElseThrow(() -> new CagnotteCustomException(
-                        "Cagnotte with given Url not found",
+                        "CagnotteApplication with given Url not found",
                         NOT_FOUND
                 ));
-        log.info("Deleting Cagnotte with url: {}", cagnotteUrl);
+        log.info("Deleting CagnotteApplication with url: {}", cagnotteUrl);
 
         if (user.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))
@@ -251,7 +251,7 @@ public class CagnotteServiceImpl implements CagnotteService {
         Cagnotte cagnotte
                 = cagnotteRepository.findByUrl(url)
                 .orElseThrow(
-                        () -> new CagnotteCustomException("Cagnotte with given URL not found", NOT_FOUND));
+                        () -> new CagnotteCustomException("CagnotteApplication with given URL not found", NOT_FOUND));
         if(cagnotte.getState().getLabel().equals(StateEnum.DRAFT.name())){
             cagnotte.setState(stateRepository.findByLabel(StateEnum.ACTIVE.name()).orElseThrow());
             cagnotteRepository.save(cagnotte);
