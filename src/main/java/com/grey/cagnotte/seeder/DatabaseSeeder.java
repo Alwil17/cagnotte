@@ -111,32 +111,32 @@ public class DatabaseSeeder {
             List<StateRequest> states = List.of(
                     StateRequest.builder()
                             .label(StateEnum.DRAFT.name())
-                            .description("Cagnotte not yet published")
+                            .description("CagnotteApplication not yet published")
                             .color("#FFC107") // Yellow
                             .build(),
                     StateRequest.builder()
                             .label(StateEnum.ACTIVE.name())
-                            .description("Cagnotte accepting contributions")
+                            .description("CagnotteApplication accepting contributions")
                             .color("#28A745") // Green
                             .build(),
                     StateRequest.builder()
                             .label(StateEnum.CLOSED.name())
-                            .description("Cagnotte manually closed")
+                            .description("CagnotteApplication manually closed")
                             .color("#DC3545") // Red
                             .build(),
                     StateRequest.builder()
                             .label(StateEnum.EXPIRED.name())
-                            .description("Cagnotte has reached its deadline")
+                            .description("CagnotteApplication has reached its deadline")
                             .color("#6C757D") // Gray
                             .build(),
                     StateRequest.builder()
                             .label(StateEnum.ARCHIVED.name())
-                            .description("Cagnotte archived for record")
+                            .description("CagnotteApplication archived for record")
                             .color("#007BFF") // Blue
                             .build(),
                     StateRequest.builder()
                             .label(StateEnum.CANCELED.name())
-                            .description("Cagnotte was canceled")
+                            .description("CagnotteApplication was canceled")
                             .color("#FD7E14") // Orange
                             .build(),
                     StateRequest.builder()

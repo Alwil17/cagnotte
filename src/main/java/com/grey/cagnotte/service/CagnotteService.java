@@ -19,7 +19,7 @@ public interface CagnotteService {
 
     public CagnotteResponse getCagnotteById(long cagnotteId) ;
 
-    // Use Cagnotte instead of CagnotteResponse since we don't know which
+    // Use CagnotteApplication instead of CagnotteResponse since we don't know which
     // entity call consume this service.
     public Cagnotte getCagnotteByUrl(String url, boolean isPublic, String accessToken) ;
 
