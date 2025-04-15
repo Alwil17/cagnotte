@@ -19,20 +19,21 @@ public class CagnotteResponse {
     private long id;
     private String label;
     private String slug;
-    private String reference;
-    private String organizer;
     private String concerns;
+    private String description;
     private LocalDateTime dateCreation;
     private LocalDateTime dateDue;
     private double goalAmount;
     private double collectedAmount;
     private double participationAmount;
-    private String personalizedMessage;
+    private int participationCount;
     private String image;
     private String eventLocation;
+    private boolean isPublic;
     private String url;
+    private String accessToken;
+    private LocalDateTime accessTokenExpiresAt;
     private UserResponse user;
     private CategoryResponse category;
     private State state;
-    private List<ParticipationResponse> participations;
 }

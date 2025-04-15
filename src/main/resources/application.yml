@@ -1,5 +1,5 @@
 server:
-  port: 8084
+  port: 8080
   tomcat:
     threads:
       max: 14
@@ -33,4 +33,5 @@ spring:
         jwt:
           secret-key: kfnazezfdajiefjpoehiuhiuhhkjfdslgpreuiehfshrs
   application:
-    name: Cagnotte
+    name: CagnotteApplication
+    accessTokenValidityMinutes: 1440

@@ -7,15 +7,13 @@ import com.grey.cagnotte.payload.response.ParticipationResponse;
 import java.util.List;
 
 public interface ParticipationService {
-    List<Participation> getAllParticipations();
+    List<ParticipationResponse> getAllParticipations();
 
-    long addParticipation(ParticipationRequest participationRequest);
+    ParticipationResponse addParticipation(ParticipationRequest participationRequest);
 
-    void addParticipation(List<ParticipationRequest> participationRequests);
-
-    List<Participation> getParticipationsByCagnotteId(long cagnotteId);
-
-    void editParticipation(ParticipationRequest participationRequest, long participationId);
+    ParticipationResponse editParticipation(ParticipationRequest participationRequest, long participationId);
 
     public void deleteParticipationById(long participationId);
+
+    List<Participation> getParticipationByCagnotteUrl(String cagnotteUrl, String accessToken);
 }

@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface ParticipationRepository extends JpaRepository<Participation,Long> {
 
-    @Query("SELECT p from Participation p where p.cagnotte.id = :cId")
-    List<Participation> findAllByCagnotteId(@Param("cId") long cagnotteId);
+    @Query("SELECT p from Participation p where p.cagnotte.url = :cUrl")
+    List<Participation> findAllByCagnotteUrl(@Param("cUrl") String cagnotteUrl);
+
+    int countByCagnotteId(long cagnotteId);
 }

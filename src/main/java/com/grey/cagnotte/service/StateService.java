@@ -9,11 +9,13 @@ import java.util.List;
 public interface StateService {
     List<State> getAllStates();
 
-    long addState(StateRequest StateRequest);
+    State addState(StateRequest StateRequest);
 
     void addState(List<StateRequest> stateRequests);
 
     StateResponse getStateById(long stateId);
+
+    State getStateBySlug(String state);
 
     void editState(StateRequest stateRequest, long stateId);
 

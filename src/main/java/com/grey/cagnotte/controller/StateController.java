@@ -30,12 +30,11 @@ public class StateController {
 
     @PreAuthorize("hasAuthority('ADD_STATE')")
     @PostMapping
-    public ResponseEntity<Long> addState(@RequestBody StateRequest stateRequest){
+    public ResponseEntity<State> addState(@RequestBody StateRequest stateRequest){
         log.info(name+"addState is called");
-
         log.info(name+"addUser | stateRequest : " + stateRequest.toString());
-        long stateId= stateService.addState(stateRequest);
-        return new ResponseEntity<>(stateId, HttpStatus.CREATED);
+        State state = stateService.addState(stateRequest);
+        return new ResponseEntity<>(state, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")

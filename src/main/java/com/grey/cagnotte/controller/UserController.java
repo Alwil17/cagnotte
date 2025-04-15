@@ -25,24 +25,26 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
         log.info("UserController | getAllUsers is called");
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Long> addUser(@RequestBody UserRequest userRequest) {
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<UserResponse> addUser(@RequestBody UserRequest userRequest) {
 
         log.info("UserController | addUser is called");
 
         log.info("UserController | addUser | userRequest : " + userRequest.toString());
 
-        long userId = userService.addUser(userRequest);
-        return new ResponseEntity<>(userId, HttpStatus.CREATED);
+        UserResponse user = userService.addUser(userRequest);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserResponse> getUserDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         org.springframework.security.core.userdetails.User userConnected = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();  // Le username du principal authentifié
@@ -62,6 +64,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> editUser(@RequestBody UserRequest userRequest,
             @PathVariable("id") long userId
     ) {

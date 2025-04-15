@@ -19,6 +19,7 @@ import static org.springframework.beans.BeanUtils.copyProperties;
 @Log4j2
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
+    private final String NOT_FOUND = "CATEGORY_NOT_FOUND";
 
     private final CategoryRepository categoryRepository;
 
@@ -38,12 +39,8 @@ public class CategoryServiceImpl implements CategoryService {
             category = Category.builder()
                     .label(categoryRequest.getLabel())
                     .slug(Str.slug(categoryRequest.getLabel()))
-                    .icone(categoryRequest.getIcone())
-                    .allowConcern(categoryRequest.isAllowConcern())
-                    .allowMessage(categoryRequest.isAllowMessage())
-                    .allowMedia(categoryRequest.isAllowMedia())
-                    .allowLocation(categoryRequest.isAllowLocation())
-                    .allowUrl(categoryRequest.isAllowUrl())
+                    .icon(categoryRequest.getIcon())
+                    .description(categoryRequest.getDescription())
                     .build();
             category =  categoryRepository.save(category);
         }
@@ -58,7 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category;
 
         category = categoryRepository.findById(categorieId).orElseThrow(
-                () -> new CagnotteCustomException("Category not found","404")
+                () -> new CagnotteCustomException("Category not found", NOT_FOUND)
         );
 
         CategoryResponse categoryResponse = new CategoryResponse();
@@ -71,16 +68,12 @@ public class CategoryServiceImpl implements CategoryService {
     public long editCategory(CategoryRequest categoryRequest, long categorieId) {
 
         Category category = categoryRepository.findById(categorieId).orElseThrow(
-                ()-> new CagnotteCustomException("Category with given Id not found","404")
+                ()-> new CagnotteCustomException("Category with given Id not found", NOT_FOUND)
         );
         category.setLabel(categoryRequest.getLabel());
         category.setSlug(Str.slug(categoryRequest.getLabel()));
-        category.setIcone(categoryRequest.getIcone());
-        category.setAllowConcern(categoryRequest.isAllowConcern());
-        category.setAllowMessage(categoryRequest.isAllowMessage());
-        category.setAllowMedia(categoryRequest.isAllowMedia());
-        category.setAllowLocation(categoryRequest.isAllowLocation());
-        category.setAllowUrl(categoryRequest.isAllowUrl());
+        category.setIcon(categoryRequest.getIcon());
+        category.setDescription(categoryRequest.getDescription());
 
         category = categoryRepository.save(category);
         return category.getId();
@@ -90,7 +83,7 @@ public class CategoryServiceImpl implements CategoryService {
     public void deleteCategory(long categorieId) {
 
        if(!categoryRepository.existsById(categorieId)){
-           throw new CagnotteCustomException("Category with given ID Not Found","404");
+           throw new CagnotteCustomException("Category with given ID Not Found", NOT_FOUND);
        }
        categoryRepository.deleteById(categorieId);
     }

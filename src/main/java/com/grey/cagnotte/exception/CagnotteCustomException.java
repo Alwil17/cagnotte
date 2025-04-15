@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CagnotteCustomException extends RuntimeException{
-
     private String errorCode;
 
     public CagnotteCustomException(String message, String errorCode) {

@@ -9,14 +9,25 @@ import java.util.List;
 
 public interface CagnotteService {
 
-    List<Cagnotte> getAllCagnottes () ;
+    List<CagnotteResponse> getAllCagnottes();
 
-    public long addCagnotte(CagnotteRequest cagnotteRequest) ;
+    List<CagnotteResponse> getPublicCagnottes() ;
+
+    List<CagnotteResponse> getAllMyCagnottes();
+
+    public CagnotteResponse addCagnotte(CagnotteRequest cagnotteRequest) ;
 
     public CagnotteResponse getCagnotteById(long cagnotteId) ;
 
-    public void editCagnotte(CagnotteRequest cagnotteRequest , long cagnotteId) ;
+    // Use CagnotteApplication instead of CagnotteResponse since we don't know which
+    // entity call consume this service.
+    public Cagnotte getCagnotteByUrl(String url, boolean isPublic, String accessToken) ;
 
-    public void deleteCagnotteById(long cagnotteId) ;
+    public CagnotteResponse editCagnotte(CagnotteRequest cagnotteRequest , String cagnotteUrl) ;
 
+    public void deleteCagnotteByUrl(String cagnotteUrl) ;
+
+    public void addSubstractParticipationAmount(Cagnotte cagnotte, double amount) ;
+
+    CagnotteResponse publishCagnotte(String url);
 }

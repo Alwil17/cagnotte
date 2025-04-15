@@ -19,22 +19,11 @@ public class Category {
 
   @Max(100)
   private String label;
-  private String slug ;
-  private String icone ;
-
-  @Column(name = "allow_concern")
-  private boolean allowConcern;
-  @Column(name = "allow_message")
-  private boolean allowMessage;
-  @Column(name = "allow_media")
-  private boolean allowMedia;
-  @Column(name = "allow_location ")
-  private boolean allowLocation;
-  @Column(name = "allow_url")
-  private boolean allowUrl;
+  private String slug;
+  private String icon;
+  private String description;
 
   @OneToMany(mappedBy = "category")
   @JsonIgnore
   private List<Cagnotte> cagnottes;
-
 }
