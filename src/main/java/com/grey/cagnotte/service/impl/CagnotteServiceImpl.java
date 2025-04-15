@@ -240,7 +240,7 @@ public class CagnotteServiceImpl implements CagnotteService {
     }
 
     @Override
-    public void addParticipationAmount(Cagnotte cagnotte, double amount) {
+    public void addSubstractParticipationAmount(Cagnotte cagnotte, double amount) {
         log.info("CagnotteServiceImpl | addParticipationAmount is called");
         cagnotte.setParticipationAmount(cagnotte.getParticipationAmount() + amount);
         cagnotteRepository.save(cagnotte);
