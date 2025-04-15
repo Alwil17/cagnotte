@@ -27,7 +27,7 @@ public interface CagnotteService {
 
     public void deleteCagnotteByUrl(String cagnotteUrl) ;
 
-    public void addParticipationAmount(Cagnotte cagnotte, double amount) ;
+    public void addSubstractParticipationAmount(Cagnotte cagnotte, double amount) ;
 
     CagnotteResponse publishCagnotte(String url);
 }

@@ -92,8 +92,7 @@ public class ParticipationServiceImpl implements ParticipationService {
 
         participation = participationRepository.save(participation);
 
-        cagnotte.setCollectedAmount(cagnotte.getCollectedAmount() + participation.getAmount());
-        cagnotteService.addParticipationAmount(cagnotte, participation.getAmount());
+        cagnotteService.addSubstractParticipationAmount(cagnotte, participation.getAmount());
 
         log.info("ParticipationServiceImpl | addParticipation | Participation Created | Id : " + participation.getId());
         return mapToResponse(participation);
@@ -110,7 +109,23 @@ public class ParticipationServiceImpl implements ParticipationService {
                         "Participation with given Id not found",
                         NOT_FOUND
                 ));
-        participation.setAmount(participationRequest.getAmount());
+        if(participation.getAmount() != participationRequest.getAmount()){
+            Cagnotte cagnotte;
+            if(participationRequest.getCagnotte_access_token() != null && !participationRequest.getCagnotte_access_token().isBlank()){
+                cagnotte = cagnotteService.getCagnotteByUrl(participationRequest.getCagnotte_url(), false, participationRequest.getCagnotte_access_token());
+            }else {
+                cagnotte = cagnotteService.getCagnotteByUrl(participationRequest.getCagnotte_url(), true, null);
+            }
+
+            if(!cagnotte.getState().getLabel().equals(StateEnum.ACTIVE.name())){
+                throw new CagnotteCustomException("This cagnotte is not (yet) open for contributions.", "CONTRIBUTION_NOT_POSSIBLE");
+            }
+
+            cagnotteService.addSubstractParticipationAmount(cagnotte, -participation.getAmount());
+            participation.setAmount(participationRequest.getAmount());
+            cagnotteService.addSubstractParticipationAmount(cagnotte, participationRequest.getAmount());
+        }
+
         participation.setDateParticipation(participationRequest.getDateParticipation());
         participation.setParticipantName(participationRequest.getParticipantName());
         participation.setCustomMessage(participationRequest.getCustomMessage());
