@@ -69,6 +69,7 @@ public class Cagnotte {
     private Category category;
 
     @OneToMany(mappedBy = "cagnotte")
+    @JsonIgnore
     private List<Participation> participations;
 
 }

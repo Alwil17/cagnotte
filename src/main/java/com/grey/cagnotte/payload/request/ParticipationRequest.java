@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 @Builder
 public class ParticipationRequest {
     private double amount;
-    private long cagnotte_id;
-    private long type_id;
+    private String cagnotte_url;
+    private String cagnotte_access_token;
     private LocalDateTime dateParticipation;
     private String participantName;
     private String customMessage;

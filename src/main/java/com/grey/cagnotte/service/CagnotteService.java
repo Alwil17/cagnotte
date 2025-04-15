@@ -19,13 +19,15 @@ public interface CagnotteService {
 
     public CagnotteResponse getCagnotteById(long cagnotteId) ;
 
-    public CagnotteResponse getCagnotteByUrl(String cagnotteUrl, boolean isPublic) ;
-
-    public CagnotteResponse getPrivateCagnotte(String slug, String accessToken);
+    // Use Cagnotte instead of CagnotteResponse since we don't know which
+    // entity call consume this service.
+    public Cagnotte getCagnotteByUrl(String url, boolean isPublic, String accessToken) ;
 
     public CagnotteResponse editCagnotte(CagnotteRequest cagnotteRequest , String cagnotteUrl) ;
 
     public void deleteCagnotteByUrl(String cagnotteUrl) ;
+
+    public void addParticipationAmount(Cagnotte cagnotte, double amount) ;
 
     CagnotteResponse publishCagnotte(String url);
 }

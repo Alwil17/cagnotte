@@ -20,7 +20,7 @@ import static com.grey.cagnotte.security.SecurityConstants.PUBLIC_URLS;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
