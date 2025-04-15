@@ -12,9 +12,11 @@ import com.grey.cagnotte.payload.request.CagnotteRequest;
 import com.grey.cagnotte.payload.response.CagnotteResponse;
 import com.grey.cagnotte.repository.CagnotteRepository;
 import com.grey.cagnotte.repository.CategoryRepository;
+import com.grey.cagnotte.repository.ParticipationRepository;
 import com.grey.cagnotte.repository.StateRepository;
 import com.grey.cagnotte.service.CagnotteService;
 import com.grey.cagnotte.service.UserService;
+import com.grey.cagnotte.utils.SecurityUtils;
 import com.grey.cagnotte.utils.Str;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -37,6 +39,7 @@ public class CagnotteServiceImpl implements CagnotteService {
     private final String NOT_FOUND = "CAGNOTTE_NOT_FOUND";
 
     private final CagnotteRepository cagnotteRepository;
+    private final ParticipationRepository participationRepository;
     private final UserService userService;
     private final StateRepository stateRepository;
     private final CategoryRepository categoryRepository;
@@ -62,29 +65,6 @@ public class CagnotteServiceImpl implements CagnotteService {
         User user = userService.getMe();
         List<Cagnotte> cagnottes = cagnotteRepository.findAllMyCagnotte(user.getId());
         return cagnottes.stream().map(this::mapToResponse).collect(Collectors.toList());
-    }
-
-    @Override
-    public CagnotteResponse getCagnotteById(long cagnotteId) {
-        Cagnotte cagnotte
-                = cagnotteRepository.findById(cagnotteId)
-                .orElseThrow(
-                        () -> new CagnotteCustomException("Cagnotte with given id not found", NOT_FOUND));
-
-        return mapToResponse(cagnotte);
-    }
-
-    @Override
-    public CagnotteResponse getCagnotteByUrl(String cagnotteUrl, boolean isPublic) {
-        Cagnotte cagnotte
-                = cagnotteRepository.findByUrl(cagnotteUrl)
-                .orElseThrow(
-                        () -> new CagnotteCustomException("Cagnotte with given URL not found", NOT_FOUND));
-        if(cagnotte.isPublic() == isPublic){
-            return mapToResponse(cagnotte);
-
-        }
-        throw new CagnotteCustomException("You are trying to access public or private cagnotte through wrong url.", "WRONG_URL");
     }
 
     @Override
@@ -148,6 +128,47 @@ public class CagnotteServiceImpl implements CagnotteService {
         return mapToResponse(cagnotte);
     }
 
+    @Override
+    public CagnotteResponse getCagnotteById(long cagnotteId) {
+        Cagnotte cagnotte
+                = cagnotteRepository.findById(cagnotteId)
+                .orElseThrow(
+                        () -> new CagnotteCustomException("Cagnotte with given id not found", NOT_FOUND));
+
+        return mapToResponse(cagnotte);
+    }
+
+    /**
+     * Method for recovering a private or public cagnotte with access logic.
+     */
+    @Override
+    public Cagnotte getCagnotteByUrl(String cagnotteUrl, boolean isPublic, String accessToken) {
+        User user = userService.getMe();
+        Cagnotte cagnotte
+                = cagnotteRepository.findByUrl(cagnotteUrl)
+                .orElseThrow(
+                        () -> new CagnotteCustomException("Cagnotte with given URL not found", NOT_FOUND));
+        // CHeck if cagnotte visibility is the same with method arg passed.
+        if(cagnotte.isPublic() == isPublic){
+            // In case the cagnotte is private, we will look for access token
+            if(!cagnotte.isPublic()){
+                // If the token is present and valid, allow access
+                if (accessToken != null && isValidAccessToken(mapToResponse(cagnotte), accessToken)) {
+                    return cagnotte;
+                }
+                // Otherwise, verify via RBAC (e.g., if the user is owner or admin)
+                // Verification will be done via your security component, or here by code
+                if (SecurityUtils.isAdmin(user)
+                        || (user.getId() == cagnotte.getUser().getId())) {
+                    return cagnotte;
+                }
+            }
+            // Assuming the cagnotte is public.
+            return cagnotte;
+        }
+        throw new CagnotteCustomException("You are trying to access public or private cagnotte through wrong url.", "WRONG_URL");
+    }
+
     /**
      * Checks if the provided access token is valid for the fundraiser.
      */
@@ -162,27 +183,6 @@ public class CagnotteServiceImpl implements CagnotteService {
             match = LocalDateTime.now().isBefore(cagnotte.getAccessTokenExpiresAt());
         }
         return match;
-    }
-
-    /**
-     * Method for recovering a private kitty with access logic.
-     */
-    public CagnotteResponse getPrivateCagnotte(String url, String accessToken) {
-        User user = userService.getMe();
-        CagnotteResponse cagnotte = getCagnotteByUrl(url, false);
-
-        // If the token is present and valid, allow access
-        if (accessToken != null && isValidAccessToken(cagnotte, accessToken)) {
-            return cagnotte;
-        }
-        // Otherwise, verify via RBAC (e.g., if the user is owner or admin)
-        // Verification will be done via your security component, or here by code
-        if (user.getAuthorities().stream()
-                        .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))
-                        || (user.getId() == cagnotte.getUser().getId())) {
-            return cagnotte;
-        }
-        throw new AccessDeniedException("Access denied to this cagnotte");
     }
 
     @Override
@@ -240,6 +240,13 @@ public class CagnotteServiceImpl implements CagnotteService {
     }
 
     @Override
+    public void addParticipationAmount(Cagnotte cagnotte, double amount) {
+        log.info("CagnotteServiceImpl | addParticipationAmount is called");
+        cagnotte.setParticipationAmount(cagnotte.getParticipationAmount() + amount);
+        cagnotteRepository.save(cagnotte);
+    }
+
+    @Override
     public CagnotteResponse publishCagnotte(String url) {
         Cagnotte cagnotte
                 = cagnotteRepository.findByUrl(url)
@@ -258,6 +265,9 @@ public class CagnotteServiceImpl implements CagnotteService {
         ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.registerModule(new JavaTimeModule());
         cagnotteResponse = mapper.convertValue(cagnotte, CagnotteResponse.class);
+
+        int participationCount = participationRepository.countByCagnotteId(cagnotte.getId());
+        cagnotteResponse.setParticipationCount(participationCount);
 
         return cagnotteResponse;
     }

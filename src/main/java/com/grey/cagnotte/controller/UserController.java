@@ -25,22 +25,22 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERADMIN')")
-    public ResponseEntity<List<User>> getAllUsers() {
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
         log.info("UserController | getAllUsers is called");
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPERADMIN')")
-    public ResponseEntity<Long> addUser(@RequestBody UserRequest userRequest) {
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<UserResponse> addUser(@RequestBody UserRequest userRequest) {
 
         log.info("UserController | addUser is called");
 
         log.info("UserController | addUser | userRequest : " + userRequest.toString());
 
-        long userId = userService.addUser(userRequest);
-        return new ResponseEntity<>(userId, HttpStatus.CREATED);
+        UserResponse user = userService.addUser(userRequest);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @GetMapping("/me")

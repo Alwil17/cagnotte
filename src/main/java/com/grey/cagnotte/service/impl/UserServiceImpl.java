@@ -33,19 +33,19 @@ import static org.springframework.beans.BeanUtils.copyProperties;
 public class UserServiceImpl implements UserService {
     private final String NOT_FOUND = "USER_NOT_FOUND";
 
-
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PermissionRepository permissionRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserResponse> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
     @Override
-    public long addUser(UserRequest userRequest) {
+    public UserResponse addUser(UserRequest userRequest) {
         log.info("UserServiceImpl | addUser is called");
 
         User user;
@@ -112,7 +112,7 @@ public class UserServiceImpl implements UserService {
         }
 
         log.info("UserServiceImpl | addUser | User Created | Id : " + user.getId());
-        return user.getId();
+        return mapToResponse(user);
     }
 
     @Override
@@ -225,17 +225,11 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(
                         () -> new CagnotteCustomException("User with given Email not found", NOT_FOUND));
 
-        UserResponse userResponse = new UserResponse();
-
-        copyProperties(user, userResponse);
-
-        log.info("UserServiceImpl | getUserByEmail | userResponse :" + userResponse.toString());
-
-        return userResponse;
+        return mapToResponse(user);
     }
 
     @Override
-    public void editUser(UserRequest userRequest, long userId) {
+    public UserResponse editUser(UserRequest userRequest, long userId) {
         log.info("UserServiceImpl | editUser is called");
 
         User user
@@ -257,6 +251,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         log.info("UserServiceImpl | editUser | User Updated | User Id :" + user.getId());
+        return mapToResponse(user);
     }
 
     @Override

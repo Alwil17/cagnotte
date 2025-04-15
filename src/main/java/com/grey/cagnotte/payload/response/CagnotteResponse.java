@@ -26,6 +26,7 @@ public class CagnotteResponse {
     private double goalAmount;
     private double collectedAmount;
     private double participationAmount;
+    private int participationCount;
     private String image;
     private String eventLocation;
     private boolean isPublic;
@@ -35,5 +36,4 @@ public class CagnotteResponse {
     private UserResponse user;
     private CategoryResponse category;
     private State state;
-    private List<ParticipationResponse> participations;
 }

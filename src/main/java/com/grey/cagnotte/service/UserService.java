@@ -7,9 +7,9 @@ import com.grey.cagnotte.payload.response.UserResponse;
 import java.util.List;
 
 public interface UserService {
-    List<User> getAllUsers();
+    List<UserResponse> getAllUsers();
 
-    long addUser(UserRequest userRequest);
+    UserResponse addUser(UserRequest userRequest);
 
     void addUser(List<UserRequest> userRequests);
 
@@ -21,7 +21,7 @@ public interface UserService {
 
     UserResponse getUserByUsername(String username);
 
-    void editUser(UserRequest userRequest, long userId);
+    UserResponse editUser(UserRequest userRequest, long userId);
 
     public void deleteUserById(long userId);
 }
