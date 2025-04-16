@@ -43,7 +43,7 @@ public class DatabaseSeeder {
     }
 
     private void seedPermissionsTable() {
-        String sql = "SELECT c.title FROM `permissions` c";
+        String sql = "SELECT c.title FROM permissions c";
         List<Permission> rs = jdbcTemplate.query(sql, (resultSet, rowNum) -> null);
         if (rs == null || rs.size() <= 0) {
             PermissionRequest ar1 = PermissionRequest.builder().title("ADD_USER").build();
@@ -66,7 +66,7 @@ public class DatabaseSeeder {
     }
 
     private void seedRoleTable() {
-        String sql = "SELECT c.name FROM `roles` c";
+        String sql = "SELECT c.name FROM roles c";
         List<Role> rs = jdbcTemplate.query(sql, (resultSet, rowNum) -> null);
         if (rs == null || rs.size() <= 0) {
             RoleRequest ar1 = RoleRequest.builder().name(RoleEnum.ADMIN.name()).build();
@@ -82,7 +82,7 @@ public class DatabaseSeeder {
     }
 
     private void seedUserTable() {
-        String sql = "SELECT c.email FROM `user` c";
+        String sql = "SELECT c.email FROM users c";
         List<User> rs = jdbcTemplate.query(sql, (resultSet, rowNum) -> null);
         if (rs == null || rs.size() <= 0) {
             UserRequest ar1 = UserRequest.builder()
@@ -105,7 +105,7 @@ public class DatabaseSeeder {
     }
 
     private void seedStateTable() {
-        String sql = "SELECT COUNT(*) FROM `state`";
+        String sql = "SELECT COUNT(*) FROM states";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
         if (count == null || count <= 0) {
             List<StateRequest> states = List.of(

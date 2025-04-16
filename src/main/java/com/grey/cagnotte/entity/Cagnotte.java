@@ -25,7 +25,7 @@ public class Cagnotte {
     private String label;
     private String slug;
     private String concerns;
-    @Column(name = "description", columnDefinition = "LONGTEXT")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
     @Column(name = "date_creation")
     private LocalDateTime dateCreation;
