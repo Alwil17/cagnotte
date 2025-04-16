@@ -13,8 +13,8 @@ Make sure you have the following installed:
 
 Clone the project and set up your environment:
 ```bash
-git clone https://github.com/Alwil17/cagnotte-api.git
-cd cagnotte-api
+git clone https://github.com/Alwil17/cagnotte.git
+cd cagnotte
 cp .env.example .env
 ```
 

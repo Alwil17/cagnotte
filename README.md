@@ -62,8 +62,8 @@ A modern RESTful API built with **Spring Boot**, supporting user authentication,
 ### 1. Clone the project
 
 ```bash
-git clone https://github.com/Alwil17/cagnotte-api.git
-cd cagnotte-api
+git clone https://github.com/Alwil17/cagnotte.git
+cd cagnotte
 ```
 
 ### 2. Create `.env` file (if using Docker Compose)
