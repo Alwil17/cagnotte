@@ -155,4 +155,4 @@ Pull requests are welcome! Please follow best practices and open an issue first 
 
 ## Contact
 
-Built by Alwil17 - contact@example.com
+Built by Alwil17 - willialfred24@gmail.com
