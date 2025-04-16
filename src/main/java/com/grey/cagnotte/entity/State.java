@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Entity
+@Table(name = "states")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

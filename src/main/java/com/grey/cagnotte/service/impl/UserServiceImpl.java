@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -268,27 +269,39 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(userId);
     }
 
-    public UserResponse mapToResponse(User user){
+    public UserResponse mapToResponse(User user) {
         UserResponse userResponse = new UserResponse();
 
-        // Récupérer toutes les permissions des rôles
-        List<Permission> rolePermissions = user.getRoles().stream()
-                .flatMap(role -> role.getPermissions().stream())
+        // Get Roles permissions
+        List<Permission> rolePermissions = user.getRoles() != null
+                ? user.getRoles().stream()
+                .filter(Objects::nonNull)
+                .flatMap(role -> role.getPermissions() != null
+                        ? role.getPermissions().stream()
+                        : Stream.empty())
+                .distinct()
+                .collect(Collectors.toList())
+                : new ArrayList<>();
+
+        // Get user permissions
+        List<Permission> directPermissions = user.getPermissions() != null
+                ? user.getPermissions()
+                : new ArrayList<>();
+
+        // Merge all
+        List<Permission> allPermissions = Stream.concat(
+                directPermissions.stream(),
+                rolePermissions.stream())
                 .distinct()
                 .collect(Collectors.toList());
 
-        // Fusionner les permissions directes, des rôles, et des postes
-        List<Permission> allPermissions = Stream.concat(user.getPermissions().stream(), rolePermissions.stream())
-                .distinct()
-                .collect(Collectors.toList());
-
-        // Si nécessaire, attacher toutes les permissions à l'utilisateur
+        // Attach permissions
         user.setPermissions(allPermissions);
 
+        // Mapping
         ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.registerModule(new JavaTimeModule());
         userResponse = mapper.convertValue(user, UserResponse.class);
-
         userResponse.setActive(user.isActive());
 
         return userResponse;
